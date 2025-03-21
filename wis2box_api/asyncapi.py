@@ -108,7 +108,7 @@ def generate_asyncapi(config: dict, locale: str) -> dict:
 
     a = {
         'asyncapi': '2.6.0',
-        'id': 'https://github.com/wmo-im/wis2box',
+        'id': 'https://docs.wis2box.wis.wmo.int',
         'defaultContentType': 'application/json',
         'info': {
             'version': __version__,

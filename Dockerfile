@@ -18,7 +18,7 @@
 # under the License.
 #
 ###############################################################################
-FROM ghcr.io/wmo-im/dim_eccodes_baseimage:latest
+FROM ghcr.io/world-meteorological-organization/dim_eccodes_baseimage:latest
 
 ENV PYGEOAPI_CONFIG=/data/wis2box/config/pygeoapi/local.config.yml
 ENV PYGEOAPI_OPENAPI=/data/wis2box/config/pygeoapi/local.openapi.yml
@@ -38,8 +38,8 @@ RUN pip3 install --no-cache-dir https://github.com/geopython/pygeoapi/archive/re
 
 # install WMO software
 RUN pip3 install --no-cache-dir \
-    https://github.com/wmo-im/pywis-topics/archive/refs/tags/0.3.2.zip \
-    https://github.com/wmo-im/pywcmp/archive/refs/tags/0.8.5.zip \
+    https://github.com/World-Meteorological-Organization/pywis-topics/archive/refs/tags/0.3.2.zip \
+    https://github.com/World-Meteorological-Organization/pywcmp/archive/refs/tags/0.8.5.zip \
     https://github.com/wmo-cop/pyoscar/archive/refs/tags/0.9.0.zip
 
 RUN pywcmp bundle sync
@@ -49,10 +49,10 @@ RUN mkdir -p /data && \
     curl -f -L -o /data/wmo-ra.geojson https://raw.githubusercontent.com/OGCMetOceanDWG/wmo-ra/master/wmo-ra.geojson
 
 # get latest version of csv2bufr templates and install
-RUN c2bt=$(git -c 'versionsort.suffix=-' ls-remote --tags --sort='v:refname' https://github.com/wmo-im/csv2bufr-templates.git | tail -1 | cut -d '/' -f 3 | sed 's/v//') && \
+RUN c2bt=$(git -c 'versionsort.suffix=-' ls-remote --tags --sort='v:refname' https://github.com/World-Meteorological-Organization/csv2bufr-templates.git | tail -1 | cut -d '/' -f 3 | sed 's/v//') && \
     mkdir /opt/csv2bufr && \
     cd /opt/csv2bufr && \
-    wget https://github.com/wmo-im/csv2bufr-templates/archive/refs/tags/v${c2bt}.tar.gz && \
+    wget https://github.com/World-Meteorological-Organization/csv2bufr-templates/archive/refs/tags/v${c2bt}.tar.gz && \
     tar -zxf v${c2bt}.tar.gz --strip-components=1 csv2bufr-templates-${c2bt}/templates
 
 # install wis2box-api

@@ -116,7 +116,7 @@ setup(
     author_email='tomkralidis@gmail.com',
     maintainer='Tom Kralidis',
     maintainer_email='tomkralidis@gmail.com',
-    url='https://github.com/wmo-im/wis2box-api',
+    url='https://github.com/World-Meteorological-Organization/wis2box-api',
     install_requires=read('requirements.txt').splitlines(),
     packages=find_packages(),
     include_package_data=True,
