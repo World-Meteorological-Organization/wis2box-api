@@ -2,7 +2,7 @@
 
 WIS 2.0 in a box API provides [OGC API](https://ogcapi.ogc.org) support using [pygeoapi](https://pygeoapi.io), and intended for use for within the [wis2box](https://docs.wis2box.wis.wmo.int) project.
 
-wis2box-api uses the base image provided by [dim_eccodes_baseimage](https://github.com/wmo-im/dim_eccodes_baseimage) to enable support for data conversion through pygeoapi processes.
+wis2box-api uses the base image provided by [dim_eccodes_baseimage](https://github.com/World-Meteorological-Organization/dim_eccodes_baseimage) to enable support for data conversion through pygeoapi processes.
 
 ## Installation
 
@@ -22,7 +22,7 @@ git push origin main
 git tag -a x.y.z -m 'tagging release version x.y.z'
 git push --tags
 
-# publish release on GitHub (https://github.com/wmo-im/wis2box-api/releases/new)
+# publish release on GitHub (https://github.com/World-Meteorological-Organization/wis2box-api/releases/new)
 
 # bump version back to dev
 vi wis2box_api/__init__.py  # update __version__
@@ -36,7 +36,7 @@ git push origin main
 
 ## Issues
 
-Please direct all issues to the [main wis2box issue tracker](https://github.com/wmo-im/wis2box/issues)
+Please direct all issues to the [main wis2box issue tracker](https://github.com/World-Meteorological-Organization/wis2box/issues)
 
 ## Contact
 

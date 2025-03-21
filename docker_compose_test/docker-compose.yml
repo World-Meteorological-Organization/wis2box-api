@@ -41,7 +41,7 @@ services:
     mem_limit: 1g
     memswap_limit: 1g
     restart: always
-    image: ghcr.io/wmo-im/wis2box-management:latest
+    image: ghcr.io/World-Meteorological-Organization/wis2box-management:latest
     env_file:
       - test.env
     volumes:
@@ -60,7 +60,7 @@ services:
   wis2box-auth:
     container_name: wis2box-api-test-wis2box-auth
     restart: always
-    image: ghcr.io/wmo-im/wis2box-auth:latest
+    image: ghcr.io/World-Meteorological-Organization/wis2box-auth:latest
     env_file:
       - test.env
     volumes:
@@ -69,7 +69,7 @@ services:
   mosquitto:
     container_name: wis2box-api-test-mosquitto
     restart: always
-    image: ghcr.io/wmo-im/wis2box-broker:latest
+    image: ghcr.io/World-Meteorological-Organization/wis2box-broker:latest
     env_file:
       - test.env
     ports:
