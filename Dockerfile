@@ -18,7 +18,7 @@
 # under the License.
 #
 ###############################################################################
-FROM ghcr.io/World-Meteorological-Organization/dim_eccodes_baseimage:latest
+FROM ghcr.io/world-meteorological-organization/dim_eccodes_baseimage:latest
 
 ENV PYGEOAPI_CONFIG=/data/wis2box/config/pygeoapi/local.config.yml
 ENV PYGEOAPI_OPENAPI=/data/wis2box/config/pygeoapi/local.openapi.yml
