@@ -1,6 +1,7 @@
 services:
   wis2box-api:
     container_name: wis2box-api-test
+    platform: linux/amd64
     env_file:
       - test.env
     build:
@@ -9,7 +10,7 @@ services:
       elasticsearch:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost/oapi/admin/resources"]
+      test: ["CMD", "curl", "-f", "http://localhost/oapi/admin/config/resources"]
       interval: 5s
       retries: 100
     ports:
@@ -41,7 +42,7 @@ services:
     mem_limit: 1g
     memswap_limit: 1g
     restart: always
-    image: ghcr.io/wmo-im/wis2box-management:latest
+    image: webbben/wis2box-management:latest
     env_file:
       - test.env
     volumes:
