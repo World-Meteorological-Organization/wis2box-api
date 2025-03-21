@@ -7,7 +7,6 @@ flask-cors
 gevent==21.8.0
 json-merge-patch
 paho-mqtt
-psycopg2
 pygeometa
 pymetdecoder-wmo==0.1.14
 synop2bufr==0.7.0
