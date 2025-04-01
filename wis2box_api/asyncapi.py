@@ -26,9 +26,9 @@ from urllib.parse import urlparse
 
 
 from pygeoapi import l10n
-from pygeoapi.api import API, APIRequest, F_HTML, pre_process
+from pygeoapi.api import API, APIRequest
 from pygeoapi.openapi import load_openapi_document
-from pygeoapi.util import to_json, render_j2_template
+from pygeoapi.util import to_json
 
 from wis2box_api import __version__
 
@@ -54,35 +54,25 @@ class AsyncAPI(API):
         openapi = load_openapi_document()
         super().__init__(config, openapi)
 
-    @pre_process
-    def get_asyncapi(self, request: Union[APIRequest, Any]) -> Tuple[dict, int, str]:  # noqa
-        """
-        Provide AsyncAPI document
+def get_asyncapi(api: AsyncAPI, request: Union[APIRequest, Any]) -> Tuple[dict, int, str]:  # noqa
+    """
+    Provide AsyncAPI document
 
-        :param request: request object
+    :param request: request object
 
-        :returns: tuple of headers, status code, content
-        """
+    :returns: tuple of headers, status code, content
+    """
 
-        if not request.is_valid():
-            return self.get_format_exception(request)
+    if not request.is_valid():
+        return api.get_format_exception(request)
 
-        headers = request.get_response_headers()
-        headers['Content-Type'] = 'application/json'
+    headers = request.get_response_headers()
+    headers['Content-Type'] = 'application/json'
 
-        content = to_json(generate_asyncapi(self.config, request.locale),
-                          self.pretty_print)
+    content = to_json(generate_asyncapi(api.config, request.locale),
+                      api.pretty_print)
 
-        return headers, 200, content
-
-        if request.format == F_HTML:
-            content = render_j2_template(
-                self.config, 'admin/index.html', self.config, request.locale
-            )
-        else:
-            content = to_json(generate_asyncapi(), self.pretty_print)
-
-        return headers, 200, content
+    return headers, 200, content
 
 
 def generate_asyncapi(config: dict, locale: str) -> dict:

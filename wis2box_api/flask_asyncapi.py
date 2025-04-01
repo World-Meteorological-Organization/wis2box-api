@@ -24,7 +24,7 @@ import logging
 
 from flask import Blueprint, request
 
-from pygeoapi.flask_app import get_response
+from pygeoapi.flask_app import execute_from_flask
 from pygeoapi.util import yaml_load
 
 from wis2box_api.asyncapi import AsyncAPI
@@ -55,4 +55,4 @@ def home():
     :returns: HTTP response
     """
 
-    return get_response(asyncapi_.get_asyncapi(request))
+    return execute_from_flask(asyncapi_.get_asyncapi, request)

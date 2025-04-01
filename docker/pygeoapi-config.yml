@@ -8,6 +8,7 @@ server:
     languages:
         - en-US
     pretty_print: false
+    admin: true
     limit: 500
     map:
         url: ${WIS2BOX_BASEMAP_URL}
@@ -60,6 +61,10 @@ metadata:
 resources:
     station-info:
         type: process
+        extents:
+            spatial:
+                bbox: [-180,-90,180,90]
+                crs: http://www.opengis.net/def/crs/OGC/1.3/CRS84
         processor:
             name: wis2box_api.plugins.process.station_info.StationInfoProcessor
 
