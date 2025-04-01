@@ -42,7 +42,7 @@ services:
     mem_limit: 1g
     memswap_limit: 1g
     restart: always
-    image: webbben/wis2box-management:latest
+    image: ghcr.io/wmo-im/wis2box-management:latest
     env_file:
       - test.env
     volumes:
