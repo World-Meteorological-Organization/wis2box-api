@@ -38,7 +38,7 @@ identification:
         temporal:
             - begin: 2023-01-17
               end: null
-              resolution: P6H
+              resolution: PT6H
     url: https://test.example.org
     wmo_data_policy: core
 
