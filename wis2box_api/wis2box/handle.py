@@ -126,7 +126,7 @@ class DataHandler():
             if 'result' in item['_meta']:
                 if item['_meta']['result']['code'] != 1:
                     msg = item['_meta']['result']['message']
-                    LOGGER.error(f'Transform returned {msg} for wsi={wsi}')
+                    LOGGER.error(f'Transform returned {msg}')
                     continue
 
             for fmt, the_data in item.items():
@@ -135,9 +135,9 @@ class DataHandler():
 
                 if the_data is None:
                     if wsi:
-                        errors.append(f'No data returned WSI={wsi} and timestamp={data_date}') # noqa
+                        errors.append(f'No data returned for fmt={fmt}, WSI={wsi} and timestamp={data_date}') # noqa
                     else:
-                        errors.append(f'No data returned for WSI=(no WSI found) and timestamp={data_date}') # noqa
+                        errors.append(f'No data returned for fmt={fmt}') # noqa
                     continue
 
                 filename = f'{identifier}.{fmt}'
@@ -148,10 +148,11 @@ class DataHandler():
                     geometry = item['_meta']['properties']['geometry']
                 _meta = {
                         'id': identifier,
-                        'wigos_station_identifier': wsi,
                         'data_date': data_date.isoformat(),
                         'geometry': geometry,
                 }
+                if wsi:
+                    _meta['wigos_station_identifier'] = wsi
                 data.append(
                     {
                         'data': base64.b64encode(the_data).decode(),
