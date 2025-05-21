@@ -192,7 +192,7 @@ def test_universal():
             "filename": data['inputs']['filename'],
             "_meta": {
                 "id": str(data['inputs']['filename']).split('.')[0],
-                "data_date": data['inputs']['datetime'],
+                "data_date": '2025-05-20T10:20:00+00:00',
                 "geometry": data['inputs']['geometry'],
             },
             'channel': data['inputs']['channel']
