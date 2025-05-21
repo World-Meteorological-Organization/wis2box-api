@@ -103,8 +103,8 @@ class DataHandler():
         # iterate over the output_items
         # each record contains either a key from DATA_OBJECT_MIMETYPES or errors and warnings # noqa
         for record in output_items:
-            # extract the data from the record
-            if any(key in record for key in DATA_OBJECT_MIMETYPES):
+            # check that the record contains a key other than errors or warnings
+            if any(key not in ['errors', 'warnings'] for key in record):
                 data_items.append(record)
                 data_converted += 1
 
@@ -133,10 +133,7 @@ class DataHandler():
                 if fmt in ['_meta', 'errors', 'warnings']:
                     continue
 
-                if fmt not in DATA_OBJECT_MIMETYPES:
-                    LOGGER.error(f'Unknown format {fmt}')
-                    continue
-                elif the_data is None:
+                if the_data is None:
                     if wsi:
                         errors.append(f'No data returned WSI={wsi} and timestamp={data_date}') # noqa
                     else:
