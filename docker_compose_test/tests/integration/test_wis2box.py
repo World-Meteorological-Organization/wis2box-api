@@ -89,7 +89,10 @@ def transform_to_string(process_name: str, data: dict) -> dict:
     return response_json
 
 
-def validate_data_transform_process(process_name: str, data: dict, expected_response: dict):
+def validate_data_transform_process(
+        process_name: str,
+        data: dict,
+        expected_response: dict):
     """Run the data transform process and validate the response
 
     :param process_name: name of the process
@@ -159,6 +162,7 @@ def validate_data_transform_process(process_name: str, data: dict, expected_resp
             print(f' expected: {expected_message[key]}')
         assert message[key] == expected_message[key]
 
+
 def test_universal():
     """Test universal data process"""
     process_name = 'wis2box-publish_data'
@@ -167,7 +171,7 @@ def test_universal():
             "metadata_id": "urn:wmo:md:universal:test",
             "notify": True,
             "filename": "SALT31_EYVI_201020.txt",
-            "data": "SALT31 EYVI 201020\nMETAR EYVI 201020Z 28008KT 230V310 CAVOK 18/06 Q1008 NOSIG=",
+            "data": "SALT31 EYVI 201020\nMETAR EYVI 201020Z 28008KT 230V310 CAVOK 18/06 Q1008 NOSIG=", # noqa
             "datetime": "2025-05-20T10:20:00Z",
             "geometry": {
                 "type": "Point",
@@ -182,14 +186,12 @@ def test_universal():
         "result": "success",
         "messages transformed": 1,
         "messages published": 1,
-        "data_items": [
-            {
-            "data": "U0FMVDMxIEVZVkkgMjAxMDIwCk1FVEFSIEVZVkkgMjAxMDIwWiAyODAwOEtUIDIzMFYzMTAgQ0FWT0sgMTgvMDYgUTEwMDggTk9TSUc9",
+        "data_items": [{
+            "data": "U0FMVDMxIEVZVkkgMjAxMDIwCk1FVEFSIEVZVkkgMjAxMDIwWiAyODAwOEtUIDIzMFYzMTAgQ0FWT0sgMTgvMDYgUTEwMDggTk9TSUc9", # noqa
             "filename": "SALT31_EYVI_201020.txt",
-            "channel": "universal-test/data/recommended/weather/aviation/metar",
+            "channel": "universal-test/data/recommended/weather/aviation/metar", # noqa
             "_meta": {
                 "id": "SALT31_EYVI_201020",
-                "wigos_station_identifier": null,
                 "data_date": "2025-05-20T10:20:00+00:00",
                 "geometry": {
                     "type": "Point",
@@ -199,12 +201,11 @@ def test_universal():
                     ]
                 }
             }
-            }
-        ],
+        }],
         "errors": [],
         "warnings": []
     }
-        # start mqtt client
+    # start mqtt client
     client = mqtt.Client('wis2box-universal')
     # user credentials wis2box:wis2box
     client.username_pw_set('wis2box', 'wis2box')
@@ -221,6 +222,7 @@ def test_universal():
     client.loop_stop()
     # disconnect from the broker
     client.disconnect()
+
 
 def test_synop2bufr():
     """Test synop2bufr"""
