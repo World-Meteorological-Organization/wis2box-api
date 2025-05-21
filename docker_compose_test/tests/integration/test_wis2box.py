@@ -169,6 +169,7 @@ def test_universal():
     data = {
         "inputs": {
             "metadata_id": "urn:wmo:md:universal:test",
+            "channel": "universal-test/data/recommended/weather/aviation/metar", # noqa
             "notify": True,
             "filename": "SALT31_EYVI_201020.txt",
             "data": "SALT31 EYVI 201020\nMETAR EYVI 201020Z 28008KT 230V310 CAVOK 18/06 Q1008 NOSIG=", # noqa
@@ -188,19 +189,13 @@ def test_universal():
         "messages published": 1,
         "data_items": [{
             "data": "U0FMVDMxIEVZVkkgMjAxMDIwCk1FVEFSIEVZVkkgMjAxMDIwWiAyODAwOEtUIDIzMFYzMTAgQ0FWT0sgMTgvMDYgUTEwMDggTk9TSUc9", # noqa
-            "filename": "SALT31_EYVI_201020.txt",
-            "channel": "universal-test/data/recommended/weather/aviation/metar", # noqa
+            "filename": data['inputs']['filename'],
             "_meta": {
-                "id": "SALT31_EYVI_201020",
-                "data_date": "2025-05-20T10:20:00+00:00",
-                "geometry": {
-                    "type": "Point",
-                    "coordinates": [
-                        24.9384,
-                        60.1695
-                    ]
-                }
-            }
+                "id": str(data['inputs']['filename']).split('.')[0],
+                "data_date": data['inputs']['datetime'],
+                "geometry": data['inputs']['geometry'],
+            },
+            'channel': data['inputs']['channel']
         }],
         "errors": [],
         "warnings": []
