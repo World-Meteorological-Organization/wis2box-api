@@ -103,7 +103,7 @@ class DataHandler():
         # iterate over the output_items
         # each record contains either a key from DATA_OBJECT_MIMETYPES or errors and warnings # noqa
         for record in output_items:
-            # check that the record contains a key other than errors or warnings
+            # check that record contains key other than errors or warnings
             if any(key not in ['errors', 'warnings'] for key in record):
                 data_items.append(record)
                 data_converted += 1
@@ -148,11 +148,12 @@ class DataHandler():
                     geometry = item['_meta']['properties']['geometry']
                 _meta = {
                         'id': identifier,
-                        'data_date': data_date.isoformat(),
-                        'geometry': geometry,
+                        'data_date': data_date.isoformat()
                 }
-                if wsi:
+                if wsi is not None:
                     _meta['wigos_station_identifier'] = wsi
+                if geometry is not None:
+                    _meta['geometry'] = geometry
                 data.append(
                     {
                         'data': base64.b64encode(the_data).decode(),

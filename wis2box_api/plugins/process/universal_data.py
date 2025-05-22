@@ -95,7 +95,7 @@ PROCESS_METADATA = {
             'metadata_id': 'urn:md:wmo:example',
             'notify': True,
             'filename': 'SALT31_EYVI_201020.txt',
-            'data': 'SALT31 EYVI 201020\nMETAR EYVI 201020Z 28008KT 230V310 CAVOK 18/06 Q1008 NOSIG=',
+            'data': 'SALT31 EYVI 201020\nMETAR EYVI 201020Z 28008KT 230V310 CAVOK 18/06 Q1008 NOSIG=', # noqa
             'datetime': '2025-05-20T10:20:00Z',
             'geometry': {
                 'type': 'Point',
@@ -163,6 +163,33 @@ class DataPublishProcessor(BaseProcessor):
             # everything before the last dot
             file_id = filename.rsplit('.', 1)[0]
             geometry = data.get('geometry', None)
+            if geometry:
+                geom_type = geometry.get('type')
+                coords = geometry.get('coordinates')
+                if geom_type is None:
+                    raise Exception('geometry type must be provided')
+                if geom_type not in ['Point', 'Polygon']:
+                    raise Exception('geometry type must be Point or Polygon')
+                if coords is None:
+                    raise Exception('geometry coordinates must be provided')
+                if geom_type == 'Point':
+                    if (not isinstance(coords, list) or
+                            len(coords) != 2 or
+                            not all(isinstance(c, (float)) for c in coords)):
+                        msg = 'Point coordinates must be a list of two floats'
+                        raise Exception(msg)
+                elif geom_type == 'Polygon':
+                    if not isinstance(coords, list):
+                        raise Exception('Polygon coordinates must be a list')
+                    for coord_list in coords:
+                        if not isinstance(coord_list, list):
+                            raise Exception('Each set of coordinates in a Polygon must be a list of [x, y] pairs') # noqa
+                        for xy_pair in coord_list:
+                            if not (isinstance(xy_pair, list) and len(xy_pair) == 2): # noqa
+                                raise Exception('Each coordinate must be a list of two values: [x, y]') # noqa
+                            if not all(isinstance(c, (float)) for c in xy_pair): # noqa
+                                raise Exception('Coordinate values must be floats') # noqa
+
             # check if data['data'] is a string	or bytes
             the_data = None
             if isinstance(data['data'], str):
@@ -172,10 +199,9 @@ class DataPublishProcessor(BaseProcessor):
                 the_data = data['data']
             else:
                 raise Exception('data must be a string or bytes')
-            
-            
+
             output_item = {
-                file_type : the_data,
+                file_type: the_data,
                 '_meta': {
                     'id': file_id,
                     'properties': {
