@@ -103,6 +103,11 @@ resources:
         processor:
             name: wis2box_api.plugins.process.bufr2geojson.Bufr2geojsonProcessor
 
+    bufr2temp:
+        type: process
+        processor:
+            name: wis2box_api.plugins.process.bufr2temp.Bufr2TempProcessor
+
     cap2geojson:
         type: process
         processor:
