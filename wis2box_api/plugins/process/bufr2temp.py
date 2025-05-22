@@ -2,11 +2,11 @@
 #
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
-# for additional information regarding copyright ownership.
-# The ASF licenses this file to you under the Apache License,
-# Version 2.0 (the "License"); you may not use this file except
-# in compliance with the License.  You may obtain a copy of the
-# License at
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
 #
 #   http://www.apache.org/licenses/LICENSE-2.0
 #
@@ -61,7 +61,8 @@ PROCESS_METADATA = {
         "items": {
             "title": {"en": "TemperaturePressureArray"},
             "description": {
-                "en": "Array of {pressure, temperature, ln(pressure), phenomenonTime}"
+                "Array of {pressure, temperature, ln(pressure), "
+                "phenomenonTime}"
             },
             "schema": {
                 "type": "array",
@@ -133,7 +134,8 @@ class Bufr2TempProcessor(BaseProcessor):
                     continue
 
                 props = item["properties"]
-                if not props.get("observedProperty", "").endswith("temperature"):
+                obs_prop = props.get("observedProperty", "")
+                if not obs_prop.endswith("temperature"):
                     continue
 
                 zc = (
