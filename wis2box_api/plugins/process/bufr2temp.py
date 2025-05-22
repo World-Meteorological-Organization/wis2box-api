@@ -2,11 +2,11 @@
 #
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
-# distributed with this work for additional information
-# regarding copyright ownership.  The ASF licenses this file
-# to you under the Apache License, Version 2.0 (the
-# "License"); you may not use this file except in compliance
-# with the License.  You may obtain a copy of the License at
+# for additional information regarding copyright ownership.
+# The ASF licenses this file to you under the Apache License,
+# Version 2.0 (the "License"); you may not use this file except
+# in compliance with the License.  You may obtain a copy of the
+# License at
 #
 #   http://www.apache.org/licenses/LICENSE-2.0
 #
@@ -24,7 +24,6 @@ import math
 import logging
 import requests
 
-# **IMPORTANT**: use the WIS2Box handle, not the vanilla pygeoapi one
 from pygeoapi.process.base import BaseProcessor
 from bufr2geojson import transform as as_geojson
 from wis2box_api.wis2box.env import STORAGE_PUBLIC_URL, STORAGE_SOURCE
@@ -35,26 +34,28 @@ PROCESS_METADATA = {
     "id": "bufr2temp",
     "version": "0.1.0",
     "title": "Extract Temperature–Pressure Pairs",
-    "description": "Download or decode a BUFR file and extract "
-                   "(pressure, temperature, ln(pressure)) for T–lnP plotting",
+    "description": (
+        "Download or decode a BUFR file and extract "
+        "(pressure, temperature, ln(pressure)) for T–lnP plotting"
+    ),
     "keywords": ["bufr", "temperature", "pressure", "T-lnP"],
     "links": [],
-    "jobControlOptions": ["async-execute","sync-execute"],
+    "jobControlOptions": ["async-execute", "sync-execute"],
     "inputs": {
         "data_url": {
             "title": "data_url",
             "description": "URL to the BUFR file",
             "schema": {"type": "string"},
             "minOccurs": 1,
-            "maxOccurs": 1
+            "maxOccurs": 1,
         },
         "data": {
             "title": "data",
             "description": "Base64-encoded BUFR content",
             "schema": {"type": "string"},
             "minOccurs": 0,
-            "maxOccurs": 1
-        }
+            "maxOccurs": 1,
+        },
     },
     "outputs": {
         "items": {
@@ -69,16 +70,16 @@ PROCESS_METADATA = {
                     "properties": {
                         "pressure": {"type": "number"},
                         "temperature": {"type": "number"},
-                        "log_pressure": {"type": ["number","null"]},
-                        "phenomenonTime": {"type": "string"}
-                    }
-                }
-            }
+                        "log_pressure": {"type": ["number", "null"]},
+                        "phenomenonTime": {"type": "string"},
+                    },
+                },
+            },
         },
         "error": {
             "title": {"en": "Error message"},
-            "schema": {"type": "string"}
-        }
+            "schema": {"type": "string"},
+        },
     },
     "example": {
         "inputs": {
@@ -88,12 +89,11 @@ PROCESS_METADATA = {
                 "A_IUJD01LCLK211800RRA_C_LCNC_20250521180800"
             )
         }
-    }
+    },
 }
 
 
 class Bufr2TempProcessor(BaseProcessor):
-    # ← this is mandatory for auto-discovery
     name = "bufr2temp"
 
     def __init__(self, processor_def):
@@ -108,8 +108,7 @@ class Bufr2TempProcessor(BaseProcessor):
                 input_bytes = base64.b64decode(data["data"].encode("utf-8"))
             else:
                 url = data["data_url"].replace(
-                    STORAGE_PUBLIC_URL,
-                    f"{STORAGE_SOURCE}/wis2box-public"
+                    STORAGE_PUBLIC_URL, f"{STORAGE_SOURCE}/wis2box-public"
                 )
                 LOGGER.debug(f"Downloading BUFR from: {url}")
                 resp = requests.get(url)
@@ -128,35 +127,40 @@ class Bufr2TempProcessor(BaseProcessor):
 
         # 3) extract temperature/pressure records
         items = []
-        error = ""
         for coll in features:
             for fid, item in coll.items():
                 if fid != "geojson":
                     continue
+
                 props = item["properties"]
-                if not props.get("observedProperty","").endswith("temperature"):
+                if not props.get("observedProperty", "").endswith("temperature"):
                     continue
-                zc = props.get("parameter",{}) \
-                          .get("additionalProperties",{}) \
-                          .get("zCoordinate",{})
+
+                zc = (
+                    props.get("parameter", {})
+                         .get("additionalProperties", {})
+                         .get("zCoordinate", {})
+                )
                 p = zc.get("value")
-                t = props.get("result",{}).get("value")
+                t = props.get("result", {}).get("value")
                 tm = props.get("phenomenonTime")
+
                 if p is None or t is None:
                     continue
+
                 try:
                     lp = math.log(p)
                 except Exception:
                     lp = None
-                items.append({
-                    "pressure": p,
-                    "temperature": t,
-                    "log_pressure": lp,
-                    "phenomenonTime": tm
-                })
 
-        if not items:
-            error = error or "No temperature–pressure pairs extracted"
+                items.append(
+                    {
+                        "pressure": p,
+                        "temperature": t,
+                        "log_pressure": lp,
+                        "phenomenonTime": tm,
+                    }
+                )
 
+        error = "" if items else "No temperature–pressure pairs extracted"
         return "application/json", {"items": items, "error": error}
-
