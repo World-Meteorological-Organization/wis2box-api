@@ -61,7 +61,10 @@ PROCESS_METADATA = {
     "outputs": {
         "items": {
             "title": "TemperaturePressureArray",
-            "description": "Array of {pressure, temperature, ln(pressure), phenomenonTime}",
+            "description": (
+                "Array of {pressure, temperature, ln(pressure), "
+                "phenomenonTime}"
+            ),
             "schema": {
                 "type": "array",
                 "items": {
@@ -83,7 +86,9 @@ PROCESS_METADATA = {
     "example": {
         "inputs": {
             "data_url": (
-                "https://wis2box.kma.go.kr/data/2025-05-22/wis/urn:wmo:md:kr-kma:core.surface-based-observations.temp/WIGOS_0-20000-0-47169_20250522T231900.bufr4"
+                "https://wis2box.kma.go.kr/data/2025-05-22/wis/"
+                "urn:wmo:md:kr-kma:core.surface-based-observations.temp/"
+                "WIGOS_0-20000-0-47169_20250522T231900.bufr4"
             )
         }
     },
