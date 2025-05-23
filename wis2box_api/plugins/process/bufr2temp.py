@@ -31,6 +31,7 @@ from wis2box_api.wis2box.env import STORAGE_PUBLIC_URL, STORAGE_SOURCE
 LOGGER = logging.getLogger(__name__)
 
 PROCESS_METADATA = {
+    "name": "bufr2temp",
     "id": "bufr2temp",
     "version": "0.1.0",
     "title": "Extract Temperature–Pressure Pairs",
@@ -59,11 +60,8 @@ PROCESS_METADATA = {
     },
     "outputs": {
         "items": {
-            "title": {"en": "TemperaturePressureArray"},
-            "description": {
-                "Array of {pressure, temperature, ln(pressure), "
-                "phenomenonTime}"
-            },
+            "title": "TemperaturePressureArray",
+            "description": "Array of {pressure, temperature, ln(pressure), phenomenonTime}",
             "schema": {
                 "type": "array",
                 "items": {
@@ -85,9 +83,7 @@ PROCESS_METADATA = {
     "example": {
         "inputs": {
             "data_url": (
-                "https://www.dom.org.cy/wis2/data/core/weather/"
-                "surface-based-observations/temp/"
-                "A_IUJD01LCLK211800RRA_C_LCNC_20250521180800"
+                "https://wis2box.kma.go.kr/data/2025-05-22/wis/urn:wmo:md:kr-kma:core.surface-based-observations.temp/WIGOS_0-20000-0-47169_20250522T231900.bufr4"
             )
         }
     },
