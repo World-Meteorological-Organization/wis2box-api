@@ -21,19 +21,14 @@
 
 import json
 import logging
-import requests
-import shapely
-
 
 from dateutil.parser import parse
-
 from pygeoapi.process.base import BaseProcessor
-
-from wis2box_api.wis2box.handle import DataHandler
-from wis2box_api.wis2box.handle import handle_error
-
-from wis2box_api.wis2box.station import Stations
+import requests
+import shapely
 from wis2box_api.wis2box.env import WIS2BOX_DOCKER_API_URL
+from wis2box_api.wis2box.handle import DataHandler, handle_error
+from wis2box_api.wis2box.station import Stations
 
 
 LOGGER = logging.getLogger(__name__)
