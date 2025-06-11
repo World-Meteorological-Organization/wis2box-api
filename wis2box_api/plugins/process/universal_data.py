@@ -19,8 +19,11 @@
 #
 ###############################################################################
 
+import json
 import logging
 import requests
+import shapely
+
 
 from dateutil.parser import parse
 
@@ -29,8 +32,9 @@ from pygeoapi.process.base import BaseProcessor
 from wis2box_api.wis2box.handle import DataHandler
 from wis2box_api.wis2box.handle import handle_error
 
-
+from wis2box_api.wis2box.station import Stations
 from wis2box_api.wis2box.env import WIS2BOX_DOCKER_API_URL
+
 
 LOGGER = logging.getLogger(__name__)
 
@@ -106,7 +110,7 @@ PROCESS_METADATA = {
 }
 
 
-class DataPublishProcessor(BaseProcessor):
+class UniversalDataPublishProcessor(BaseProcessor):
 
     def __init__(self, processor_def):
         """
@@ -130,8 +134,8 @@ class DataPublishProcessor(BaseProcessor):
 
         try:
             notify = data['notify']
-            metadata_id = data.get('metadata_id', None)
-            channel = data.get('channel', None)
+            metadata_id = data.get('metadata_id')
+            channel = data.get('channel')
             if metadata_id is None and notify:
                 raise Exception('metadata_id must be provided if notify is True') # noqa
         except Exception as err:
@@ -164,41 +168,38 @@ class DataPublishProcessor(BaseProcessor):
             file_id = filename.rsplit('.', 1)[0]
             geometry = data.get('geometry', None)
             if geometry:
-                geom_type = geometry.get('type')
-                coords = geometry.get('coordinates')
-                if geom_type is None:
-                    raise Exception('geometry type must be provided')
-                if geom_type not in ['Point', 'Polygon']:
-                    raise Exception('geometry type must be Point or Polygon')
-                if coords is None:
-                    raise Exception('geometry coordinates must be provided')
-                if geom_type == 'Point':
-                    if (not isinstance(coords, list) or
-                            len(coords) != 2 or
-                            not all(isinstance(c, (float)) for c in coords)):
-                        msg = 'Point coordinates must be a list of two floats'
-                        raise Exception(msg)
-                elif geom_type == 'Polygon':
-                    if not isinstance(coords, list):
-                        raise Exception('Polygon coordinates must be a list')
-                    for coord_list in coords:
-                        if not isinstance(coord_list, list):
-                            raise Exception('Each set of coordinates in a Polygon must be a list of [x, y] pairs') # noqa
-                        for xy_pair in coord_list:
-                            if not (isinstance(xy_pair, list) and len(xy_pair) == 2): # noqa
-                                raise Exception('Each coordinate must be a list of two values: [x, y]') # noqa
-                            if not all(isinstance(c, (float)) for c in xy_pair): # noqa
-                                raise Exception('Coordinate values must be floats') # noqa
+                try:
+                    geometry2 = shapely.from_geojson(json.dumps(geometry))
+                except Exception as err:
+                    msg = f'Invalid geometry: {err}'
+                    LOGGER.error(msg)
+                    raise RuntimeError('Invalid geometry')
+                if geometry2.geom_type not in ['Point', 'Polygon']:  # WNM requirement # noqa
+                    msg = 'Geometry type must be Point or Polygon'
+                    LOGGER.error(msg)
+                    raise RuntimeError(msg)
+            else:
+                # get geometry from wigos_station_identifier
+                wsi = data.get('wigos_station_identifier')
+                if wsi:
+                    # get the station metadata
+                    stations = Stations()
+                    station = stations.get_station(wsi)
+                    if station is None:
+                        msg = f'No station found for WIGOS station identifier: {wsi}' # noqa
+                        handle_error(msg)
+                    geometry = station['geometry']
 
-            # check if data['data'] is a string	or bytes
             the_data = None
-            if isinstance(data['data'], str):
+            # check if data['data'] is a string	or bytes
+            is_binary = data.get('is_binary', False)
+
+            if is_binary is False:
                 # if the data is a string, convert it to bytes
                 the_data = data['data'].encode('utf-8')
-            elif isinstance(data['data'], bytes):
-                the_data = data['data']
             else:
-                raise Exception('data must be a string or bytes')
+                # if the data is bytes, use it as is
+                the_data = data['data']
 
             output_item = {
                 file_type: the_data,
@@ -221,4 +222,4 @@ class DataPublishProcessor(BaseProcessor):
         return data_handler.process_items([output_item])
 
     def __repr__(self):
-        return '<submit> {}'.format(self.name)
+        return f'UniversalDataPublishProcessor {self.name}'
