@@ -127,3 +127,5 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+docker_compose_test/tests/data/.ssh/id_rsa
+docker_compose_test/tests/data/.ssh/id_rsa.pub

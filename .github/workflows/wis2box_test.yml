@@ -34,7 +34,7 @@ jobs:
           docker exec -t wis2box-api-test-wis2box-management wis2box dataset publish /data/wis2box/metadata/discovery/csv-test.yml
           docker exec -t wis2box-api-test-wis2box-management wis2box dataset publish /data/wis2box/metadata/discovery/bufr-test.yml
           docker exec -t wis2box-api-test-wis2box-management wis2box dataset publish /data/wis2box/metadata/discovery/cap-test.yml
-
+          docker exec -t wis2box-api-test-wis2box-management wis2box dataset publish /data/wis2box/metadata/discovery/universal-test.yml
       - name: publish stations and associate to topic
         working-directory: docker_compose_test
         run: |

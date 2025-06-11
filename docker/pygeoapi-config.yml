@@ -137,3 +137,8 @@ resources:
       type: process
       processor:
         name: wis2box_api.plugins.process.bufr2bufr.BufrPublishProcessor
+
+    wis2box-publish_data:
+      type: process
+      processor:
+        name: wis2box_api.plugins.process.universal_data.UniversalDataPublishProcessor

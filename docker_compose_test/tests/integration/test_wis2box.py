@@ -89,8 +89,11 @@ def transform_to_string(process_name: str, data: dict) -> dict:
     return response_json
 
 
-def transform_to_bufr(process_name: str, data: dict, expected_response: dict):
-    """Transform data to bufr or geojson
+def validate_data_transform_process(
+        process_name: str,
+        data: dict,
+        expected_response: dict):
+    """Run the data transform process and validate the response
 
     :param process_name: name of the process
     :param data: data to be transformed
@@ -160,6 +163,62 @@ def transform_to_bufr(process_name: str, data: dict, expected_response: dict):
         assert message[key] == expected_message[key]
 
 
+def test_universal():
+    """Test universal data process"""
+    process_name = 'wis2box-publish_data'
+    data = {
+        "inputs": {
+            "metadata_id": "urn:wmo:md:universal:test",
+            "channel": "universal-test/data/recommended/weather/aviation/metar", # noqa
+            "notify": True,
+            "filename": "SALT31_EYVI_201020.txt",
+            "data": "SALT31 EYVI 201020\nMETAR EYVI 201020Z 28008KT 230V310 CAVOK 18/06 Q1008 NOSIG=", # noqa
+            "datetime": "2025-05-20T10:20:00Z",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    24.9384,
+                    60.1695
+                ]
+            }
+        }
+    }
+    expected_response = {
+        "result": "success",
+        "messages transformed": 1,
+        "messages published": 1,
+        "data_items": [{
+            "data": "U0FMVDMxIEVZVkkgMjAxMDIwCk1FVEFSIEVZVkkgMjAxMDIwWiAyODAwOEtUIDIzMFYzMTAgQ0FWT0sgMTgvMDYgUTEwMDggTk9TSUc9", # noqa
+            "filename": data['inputs']['filename'],
+            "_meta": {
+                "id": str(data['inputs']['filename']).split('.')[0],
+                "data_date": '2025-05-20T10:20:00+00:00',
+                "geometry": data['inputs']['geometry'],
+            },
+            'channel': data['inputs']['channel']
+        }],
+        "errors": [],
+        "warnings": []
+    }
+    # start mqtt client
+    client = mqtt.Client('wis2box-universal')
+    # user credentials wis2box:wis2box
+    client.username_pw_set('wis2box', 'wis2box')
+    # connect to the broker
+    client.connect('localhost', 5883, 60)
+    # subscribe to the topic
+    client.subscribe('wis2box/data/publication')
+    # define callback function for received messages
+    client.on_message = lambda client, userdata, message: store_message(message, channel=data['inputs']['channel']) # noqa
+    # start the loop
+    client.loop_start()
+    validate_data_transform_process(process_name, data, expected_response)
+    # stop the loop
+    client.loop_stop()
+    # disconnect from the broker
+    client.disconnect()
+
+
 def test_synop2bufr():
     """Test synop2bufr"""
 
@@ -209,7 +268,7 @@ def test_synop2bufr():
     client.on_message = lambda client, userdata, message: store_message(message, channel=data['inputs']['channel']) # noqa
     # start the loop
     client.loop_start()
-    transform_to_bufr(process_name, data, expected_response)
+    validate_data_transform_process(process_name, data, expected_response)
     # stop the loop
     client.loop_stop()
     # disconnect from the broker
@@ -268,7 +327,7 @@ def test_csv2bufr():
     # start the loop
     client.loop_start()
     # transform bufr message
-    transform_to_bufr(process_name, data, expected_response)
+    validate_data_transform_process(process_name, data, expected_response)
     # stop the loop
     client.loop_stop()
     # disconnect from the broker
@@ -324,7 +383,7 @@ def test_bufr2bufr():
     # start the loop
     client.loop_start()
     # transform bufr message
-    transform_to_bufr(process_name, data, expected_response)
+    validate_data_transform_process(process_name, data, expected_response)
     # stop the loop
     client.loop_stop()
     # disconnect from the broker
