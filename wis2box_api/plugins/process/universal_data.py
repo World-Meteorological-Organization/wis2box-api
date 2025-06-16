@@ -210,7 +210,7 @@ class UniversalDataPublishProcessor(BaseProcessor):
             }
             wsi = data.get('wigos_station_identifier')
             if wsi:
-                ouput_item['_meta']['properties']['wigos_station_identifier'] = wsi
+                output_item['_meta']['properties']['wigos_station_identifier'] = wsi  # noqa
         except Exception as err:
             LOGGER.error(f'Failed to process data: {err}')
             return handle_error({err})
