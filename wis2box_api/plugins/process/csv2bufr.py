@@ -219,7 +219,7 @@ class CSVPublishProcessor(BaseProcessor):
                         data_coord = (d_lat, d_lon)
                         distance_meters = geodesic(station_coord, data_coord).meters # noqa
                         if distance_meters > float(WIS2BOX_OBSERVATION_DISTANCE_THRESHOLD): # noqa
-                            warning = (f'Station {wsi}: location reported in data is {round(distance_meters,2)} meters from station-location; skipping')
+                            warning = (f'Station {wsi}: location reported in data is {round(distance_meters,2)} meters from station-location; skipping') # noqa
                             warnings.append(warning)
                             # remove bufr4 from item
                             if 'bufr4' in item:
