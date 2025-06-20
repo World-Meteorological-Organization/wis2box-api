@@ -192,7 +192,7 @@ class CSVPublishProcessor(BaseProcessor):
                 warnings = []
                 errors = []
 
-                wsi = item['_meta']['properties'].get('wigos_station_identifier')
+                wsi = item['_meta']['properties'].get('wigos_station_identifier') # noqa
 
                 if 'result' in item['_meta']:
                     if 'errors' in item['_meta']['result']:
@@ -217,12 +217,11 @@ class CSVPublishProcessor(BaseProcessor):
                         d_lon, d_lat = geo_data['coordinates']
                         station_coord = (s_lat, s_lon)
                         data_coord = (d_lat, d_lon)
-                        distance_meters = geodesic(station_coord, data_coord).meters
-                        if distance_meters > float(WIS2BOX_OBSERVATION_DISTANCE_THRESHOLD):
+                        distance_meters = geodesic(station_coord, data_coord).meters # noqa
+                        if distance_meters > float(WIS2BOX_OBSERVATION_DISTANCE_THRESHOLD): # noqa
                             warning = (f'Geometry mismatch for station {wsi}: '
                                        f'station at {s_lat}, {s_lon} '
                                        f'but data at {d_lat}, {d_lon} ')
-
 
                 item['warnings'] = warnings
                 item['errors'] = errors
