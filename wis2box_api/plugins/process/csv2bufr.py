@@ -213,15 +213,17 @@ class CSVPublishProcessor(BaseProcessor):
                     geo_station = stations.get_geometry(wsi)
                     geo_data = item['_meta'].get('geometry', None)
                     if geo_station and geo_data:
-                        s_lon, s_lat = geo_station['coordinates']
-                        d_lon, d_lat = geo_data['coordinates']
+                        s_lon, s_lat = geo_station['coordinates'][0:2]
+                        d_lon, d_lat = geo_data['coordinates'][0:2]
                         station_coord = (s_lat, s_lon)
                         data_coord = (d_lat, d_lon)
                         distance_meters = geodesic(station_coord, data_coord).meters # noqa
                         if distance_meters > float(WIS2BOX_OBSERVATION_DISTANCE_THRESHOLD): # noqa
-                            warning = (f'Geometry mismatch for station {wsi}: '
-                                       f'station at {s_lat}, {s_lon} '
-                                       f'but data at {d_lat}, {d_lon} ')
+                            warning = (f'Station {wsi}: location reported in data is {round(distance_meters,2)} meters from station-location; skipping')
+                            warnings.append(warning)
+                            # remove bufr4 from item
+                            if 'bufr4' in item:
+                                del item['bufr4']
 
                 item['warnings'] = warnings
                 item['errors'] = errors
