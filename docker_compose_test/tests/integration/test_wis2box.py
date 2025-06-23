@@ -247,7 +247,8 @@ def test_universal_binary():
                 'geometry': {
                     'type': 'Point',
                     'coordinates': [11.8817, -4.8045, 18.0]
-                }
+                },
+                'wigos_station_identifier': '0-20000-0-notreal'
             },
             'channel': data['inputs']['channel']
         }],
