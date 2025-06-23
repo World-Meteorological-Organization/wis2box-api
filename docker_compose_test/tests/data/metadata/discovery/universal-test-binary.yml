@@ -1,0 +1,60 @@
+wis2box:
+    retention: P30D
+    topic_hierarchy: universal-test-binary/data/core/weather/experimental
+    country: int
+    centre_id: universal-test-binary
+    data_mappings:
+        plugins:
+
+mcf:
+    version: 1.0
+
+metadata:
+    identifier: urn:wmo:md:universal:test-binary
+    hierarchylevel: dataset
+
+identification:
+    title: universal.test
+    abstract: universal.test
+    dates:
+        creation: 2023-01-18
+    keywords:
+        default:
+            keywords:
+                - test
+                - observations
+                - binary
+        wmo:
+            keywords:
+                - weather
+            keywords_type: theme
+            vocabulary:
+                name: Earth system disciplines as defined by the WMO Unified Data Policy, Resolution 1 (Cg-Ext(2021), Annex 1.
+                url:  https://codes.wmo.int/wis/topic-hierarchy/earth-system-discipline
+    extents:
+        spatial:
+            - bbox: [-180, -90, 180, 90]
+              crs: 4326
+        temporal:
+            - begin: 2023-01-17
+              end: null
+              resolution: PT6H
+    url: https://test.example.org
+    wmo_data_policy: core
+
+contact:
+    host:
+        organization: Test Organization
+        url: https://test.example.org
+        individualname: Firstname Lastname
+        positionname: Position Name
+        phone: "+33123456789"
+        fax: "+33123456789"
+        address: None
+        city: None
+        administrativearea: None
+        postalcode: None
+        country: Switzerland
+        email: you@example.org
+        hoursofservice: 0700h - 1500h UTC
+        contactinstructions: email

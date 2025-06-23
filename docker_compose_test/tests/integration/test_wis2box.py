@@ -219,6 +219,61 @@ def test_universal():
     client.disconnect()
 
 
+def test_universal_binary():
+    """Test universal data process with large binary data"""
+    process_name = 'wis2box-publish_data'
+    data = {
+        "inputs": {
+            "data": "QlVGUgABAgQAABYAAFAAAAAAAAIAHAAH5gMVAAAAAAALAAABgMGWx1YAANUABOIAAAMTYzNDQAAAAAAAAAAAAAACCsJqenKiKpoaqpJ4AAAAAAAAAAAAAvzGqABiq+AldarlDSKJFBc//73w+6E0BQEAZDRftA7YAMgfQAZAAD//6YcwXPqFAIJkAuAf0HFAP////////////////////////////////////w4/0cj/4AH6AAAGQ/0AA////4BkP0QANV6/RAA0WoH0YJ/YmgZ/f2///7pgIBO///////f/////////gAAAB///////v/o/////w//ALJ7///w3Nzc3", # noqa
+            "channel": "universal-test-binary/data/core/weather/experimental",
+            "metadata_id": "urn:wmo:md:universal-test-binary",
+            "notify": True,
+            "filename": "my_data.bin",
+            "datetime": "2025-06-23T15:03:00.000Z",
+            "wigos_station_identifier": "0-20000-0-notreal",
+            "is_binary": True
+        }
+    }
+    expected_response = {
+        "result": "success",
+        "messages transformed": 1,
+        "messages published": 1,
+        "data_items": [{
+            "data": data['inputs']['data'],
+            "filename": data['inputs']['filename'],
+            "_meta": {
+                "id": str(data['inputs']['filename']).split('.')[0],
+                "data_date": '2025-06-23T15:03:00+00:00',
+                'geometry': {
+                    'type': 'Point',
+                    'coordinates': [11.8817, -4.8045, 18.0]
+                },
+                'wigos_station_identifier': '0-20000-0-notreal'
+            },
+            'channel': data['inputs']['channel']
+        }],
+        "errors": [],
+        "warnings": []
+    }
+    # start mqtt client
+    client = mqtt.Client('wis2box-universal-binary')
+    # user credentials wis2box:wis2box
+    client.username_pw_set('wis2box', 'wis2box')
+    # connect to the broker
+    client.connect('localhost', 5883, 60)
+    # subscribe to the topic
+    client.subscribe('wis2box/data/publication')
+    # define callback function for received messages
+    client.on_message = lambda client, userdata, message: store_message(message, channel=data['inputs']['channel']) # noqa
+    # start the loop
+    client.loop_start()
+    validate_data_transform_process(process_name, data, expected_response)
+    # stop the loop
+    client.loop_stop()
+    # disconnect from the broker
+    client.disconnect()
+
+
 def test_synop2bufr():
     """Test synop2bufr"""
 
