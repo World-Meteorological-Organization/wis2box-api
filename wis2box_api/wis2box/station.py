@@ -46,7 +46,7 @@ class Stations():
         """
 
         if wsi in self.stations:
-            return self.stations[wsi]['geometry']
+            return self.stations[wsi].get('geometry')
         else:
             return None
 

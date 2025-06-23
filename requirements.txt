@@ -13,4 +13,5 @@ synop2bufr==0.7.0
 csv2bufr==0.8.5
 minio==7.2.7
 bufr2geojson==0.7.1
+geopy==2.4.1
 shapely==2.1.1
