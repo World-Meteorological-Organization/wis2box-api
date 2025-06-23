@@ -32,7 +32,7 @@ LOGGER = logging.getLogger(__name__)
 
 class Stations():
 
-    def __init__(self, channel: str = None):
+    def __init__(self, channel: str ):
         self.stations = {}
         self._load_stations(channel=channel)
 
