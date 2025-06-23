@@ -187,7 +187,7 @@ class UniversalDataPublishProcessor(BaseProcessor):
                     geometry = station['geometry']
 
             the_data = None
-            # check if data['data'] is a string	or binary (base64 encoded string)
+            # check if data['data'] is a string	or base64 encoded string
             is_binary = data.get('is_binary', False)
 
             if is_binary is False:
