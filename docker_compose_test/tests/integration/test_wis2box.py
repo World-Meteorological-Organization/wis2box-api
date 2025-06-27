@@ -34,6 +34,17 @@ URL = 'http://localhost:4343'
 API_URL = f'{URL}/oapi'
 
 
+def test_api_configuration():
+    """
+    Test custom API configuration
+    """
+
+    response = requests.get(API_URL).json()
+
+    assert response['title'] == 'my custom title'
+    assert response['description'] == 'my custom description'
+
+
 def store_message(message, channel):
     """store message in current directory with filename
 

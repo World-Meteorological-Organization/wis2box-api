@@ -21,6 +21,8 @@ server:
         name: TinyDB
         connection: /tmp/pygeoapi-process-manager.db
         output_dir: /tmp/
+    icon: ${WIS2BOX_ICON:-/static/img/favicon.ico}
+    logo: ${WIS2BOX_LOGO:-/static/img/logo.png}
 
 logging:
     level: ${WIS2BOX_LOGGING_LOGLEVEL}
@@ -29,36 +31,30 @@ logging:
 metadata:
     identification:
         title:
-            en: WIS2 in a box API
+            en: ${WIS2BOX_IDENTIFICATION_TITLE:-WIS2 in a box API}
         description:
-            en: |-
-                WIS 2.0 in a box (wis2box) provides a platform with the capabilities
-                for centres to integrate their data holdings and publish them
-                to the WMO Information System with a plug and play capability
-                supporting data publishing, discovery and access.
-                wis2box-api provides an API providing data and processes for interactive
-                visualization, data transformation and publication.
+            en: ${WIS2BOX_IDENTIFICATION_DESCRIPTION:-WIS2 in a box API provides data and processes for interactive visualization, data transformation and publication}
         keywords:
             en:
                 - wis2box
                 - WIS2 Node
-        url: https://docs.wis2box.wis.wmo.int
-        terms_of_service: https://www.apache.org/licenses/LICENSE-2.0
+        url: ${WIS2BOX_IDENTIFICATION_URL:-https://docs.wis2box.wis.wmo.int}
+        terms_of_service: ${WIS2BOX_IDENTIFICATION_TERMS_OF_SERVICE:-https://www.apache.org/licenses/LICENSE-2.0}
     provider:
-        name: WIS 2.0 in a box
-        url: https://docs.wis2box.wis.wmo.int
+        name: ${WIS2BOX_PROVIDER_NAME:-WIS 2.0 in a box}
+        url: ${WIS2BOX_PROVIDER_URL:-https://docs.wis2box.wis.wmo.int}
     contact:
-        name: World Meteorological Organization
-        address: 7bis, avenue de la Paix
-        city: Geneva
-        postalcode: "1211"
-        country: Switzerland
-        email: ''
-        url: https://wmo.int/contact-us
-        role: pointOfContact
+        name: ${WIS2BOX_CONTACT_NAME:-World Meteorological Organization}
+        address: ${WIS2BOX_CONTACT_ADDRESS:-7bis, avenue de la Paix}
+        city: ${WIS2BOX_CONTACT_CITY:-Geneva}
+        postalcode: ${WIS2BOX_CONTACT_POSTALCODE:-1211}
+        country: ${WIS2BOX_CONTACT_COUNTRY:-Switzerland}
+        email: ${WIS2BOX_CONTACT_EMAIL:-}
+        url: ${WIS2BOX_CONTACT_URL:-https://wmo.int/contact-us}
+        role: ${WIS2BOX_CONTACT_ROLE:-host}
     license:
-        name: Apache License 2.0
-        url: https://www.apache.org/licenses/LICENSE-2.0
+        name: ${WIS2BOX_LICENSE_NAME:-Apache License 2.0}
+        url: ${WIS2BOX_LICENSE_URL:-https://www.apache.org/licenses/LICENSE-2.0}
 
 resources:
     station-info:
