@@ -8,7 +8,9 @@ server:
     languages:
         - en-US
     pretty_print: false
-    limit: 500
+    limits:
+        default_items: 500
+        max_items: 10000
     map:
         url: ${WIS2BOX_BASEMAP_URL}
         attribution: ${WIS2BOX_BASEMAP_ATTRIBUTION}
