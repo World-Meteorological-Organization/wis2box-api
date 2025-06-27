@@ -1,8 +1,8 @@
 wis2box:
     retention: P30D
-    topic_hierarchy: universal-test-binary/data/core/weather/experimental
+    topic_hierarchy: universal-test/data/core/weather/experimental
     country: int
-    centre_id: universal-test-binary
+    centre_id: universal-test
     data_mappings:
         plugins:
 
@@ -10,7 +10,7 @@ mcf:
     version: 1.0
 
 metadata:
-    identifier: urn:wmo:md:universal:test-binary
+    identifier: urn:wmo:md:universal-test:test-binary
     hierarchylevel: dataset
 
 identification:

@@ -10,7 +10,7 @@ mcf:
     version: 1.0
 
 metadata:
-    identifier: urn:wmo:md:synop:test
+    identifier: urn:wmo:md:synop-test:test
     hierarchylevel: dataset
 
 identification:

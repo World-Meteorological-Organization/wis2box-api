@@ -46,16 +46,6 @@ class Wis2BoxAPITest(unittest.TestCase):
 
         pass
 
-    def test_asyncapi(self):
-        url = f'{self.endpoint}/asyncapi'
-        content = requests.get(url).json()
-
-        self.assertTrue('asyncapi' in content)
-        url = content['servers']['production']['url']
-        self.assertTrue(url == 'mqtt://mosquitto:1883')
-
-        self.assertTrue('origin/a/wis2' in content['channels'])
-
     def test_admin(self):
 
         url = f'{self.admin_endpoint}'

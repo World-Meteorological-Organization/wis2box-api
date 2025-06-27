@@ -10,7 +10,7 @@ mcf:
     version: 1.0
 
 metadata:
-    identifier: urn:wmo:md:bufr:test
+    identifier: urn:wmo:md:bufr-test:test
     hierarchylevel: dataset
 
 identification:

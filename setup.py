@@ -100,17 +100,9 @@ setup(
     license='MIT',
     platforms='all',
     keywords=' '.join([
-        'ozone',
-        'ultraviolet',
-        'uv',
-        'totalozone',
-        'ozonesonde',
-        'umkehr',
-        'gaw',
         'wmo',
-        'spectral',
-        'stations',
-        'instruments'
+        'wis2',
+        'api'
     ]),
     author='Tom Kralidis',
     author_email='tomkralidis@gmail.com',
