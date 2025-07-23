@@ -202,7 +202,7 @@ class CSVPublishProcessor(BaseProcessor):
                         for warning in item['_meta']['result']['warnings']:
                             warnings.append(warning)
 
-                if wsi and stations.check_valid_wsi(wsi) is False:
+                if wsi and not stations.check_valid_wsi(wsi):
                     warning = f'Station {wsi} not in station list; skipping'
                     warnings.append(warning)
                     # remove bufr4 from item
@@ -211,14 +211,17 @@ class CSVPublishProcessor(BaseProcessor):
                 elif wsi:
                     # compare geometry in _meta with station geometry
                     geo_station = stations.get_geometry(wsi)
-                    geo_data = item['_meta'].get('geometry', None)
-                    if geo_station and geo_data and 'coordinates' in geo_station and 'coordinates' in geo_data: # noqa
+                    geo_data = item['_meta'].get('geometry')
+                    if all([
+                        None not in [geo_data, geo_station],
+                        None not in [geo_data.get('coordinates'), geo_station.get('coordinates')] # noqa
+                    ]):
                         s_lon, s_lat = geo_station['coordinates'][0:2]
                         d_lon, d_lat = geo_data['coordinates'][0:2]
                         station_coord = (s_lat, s_lon)
                         data_coord = (d_lat, d_lon)
                         distance_meters = geodesic(station_coord, data_coord).meters # noqa
-                        if distance_meters > float(WIS2BOX_OBSERVATION_DISTANCE_THRESHOLD): # noqa
+                        if distance_meters > WIS2BOX_OBSERVATION_DISTANCE_THRESHOLD: # noqa
                             warning = (f'Station {wsi}: location reported in data is {round(distance_meters,2)} meters from station-location; skipping') # noqa
                             warnings.append(warning)
                             # remove bufr4 from item
