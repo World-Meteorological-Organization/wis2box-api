@@ -25,6 +25,8 @@ WIS2BOX_DOCKER_API_URL = os.environ.get('WIS2BOX_DOCKER_API_URL', 'http://wis2bo
 WIS2BOX_URL = os.environ.get('WIS2BOX_URL')
 WIS2BOX_API_URL = os.environ.get('WIS2BOX_API_URL')
 
+WIS2BOX_OBSERVATION_DISTANCE_THRESHOLD = float(os.environ.get('WIS2BOX_OBSERVATION_DISTANCE_THRESHOLD', 1000.0))  # default set to 1000 meters # noqa
+
 API_BACKEND_URL = os.environ.get('WIS2BOX_API_BACKEND_URL')
 
 BROKER_USERNAME = os.environ.get('WIS2BOX_BROKER_USERNAME')

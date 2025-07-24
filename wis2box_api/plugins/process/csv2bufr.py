@@ -24,6 +24,7 @@ import logging
 import os
 import requests
 
+from geopy.distance import geodesic
 from pygeoapi.process.base import BaseProcessor
 
 from wis2box_api.wis2box.handle import handle_error
@@ -34,7 +35,8 @@ import csv2bufr.templates as c2bt
 
 from csv2bufr import transform as transform_csv
 
-from wis2box_api.wis2box.env import WIS2BOX_DOCKER_API_URL
+from wis2box_api.wis2box.env import (WIS2BOX_DOCKER_API_URL,
+                                     WIS2BOX_OBSERVATION_DISTANCE_THRESHOLD)
 
 LOGGER = logging.getLogger(__name__)
 
@@ -190,7 +192,7 @@ class CSVPublishProcessor(BaseProcessor):
                 warnings = []
                 errors = []
 
-                wsi = item['_meta']['properties']['wigos_station_identifier']
+                wsi = item['_meta']['properties'].get('wigos_station_identifier') # noqa
 
                 if 'result' in item['_meta']:
                     if 'errors' in item['_meta']['result']:
@@ -200,12 +202,31 @@ class CSVPublishProcessor(BaseProcessor):
                         for warning in item['_meta']['result']['warnings']:
                             warnings.append(warning)
 
-                if stations.check_valid_wsi(wsi) is False:
+                if wsi and not stations.check_valid_wsi(wsi):
                     warning = f'Station {wsi} not in station list; skipping'
                     warnings.append(warning)
                     # remove bufr4 from item
                     if 'bufr4' in item:
                         del item['bufr4']
+                elif wsi:
+                    # compare geometry in _meta with station geometry
+                    geo_station = stations.get_geometry(wsi)
+                    geo_data = item['_meta'].get('geometry')
+                    if all([
+                        None not in [geo_data, geo_station],
+                        None not in [geo_data.get('coordinates'), geo_station.get('coordinates')] # noqa
+                    ]):
+                        s_lon, s_lat = geo_station['coordinates'][0:2]
+                        d_lon, d_lat = geo_data['coordinates'][0:2]
+                        station_coord = (s_lat, s_lon)
+                        data_coord = (d_lat, d_lon)
+                        distance_meters = geodesic(station_coord, data_coord).meters # noqa
+                        if distance_meters > WIS2BOX_OBSERVATION_DISTANCE_THRESHOLD: # noqa
+                            warning = (f'Station {wsi}: location reported in data is {round(distance_meters,2)} meters from station-location; skipping') # noqa
+                            warnings.append(warning)
+                            # remove bufr4 from item
+                            if 'bufr4' in item:
+                                del item['bufr4']
 
                 item['warnings'] = warnings
                 item['errors'] = errors
