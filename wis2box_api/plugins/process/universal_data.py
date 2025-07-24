@@ -19,6 +19,7 @@
 #
 ###############################################################################
 
+import base64
 import json
 import logging
 
@@ -176,9 +177,9 @@ class UniversalDataPublishProcessor(BaseProcessor):
             else:
                 # get geometry from wigos_station_identifier
                 wsi = data.get('wigos_station_identifier')
-                if wsi:
+                if wsi is not None:
                     # get the station metadata
-                    stations = Stations()
+                    stations = Stations(channel=channel)
                     station = stations.get_station(wsi)
                     if station is None:
                         msg = f'No station found for WIGOS station identifier: {wsi}' # noqa
@@ -186,15 +187,17 @@ class UniversalDataPublishProcessor(BaseProcessor):
                     geometry = station['geometry']
 
             the_data = None
-            # check if data['data'] is a string	or bytes
+            # check if data['data'] is a string	or base64 encoded string
             is_binary = data.get('is_binary', False)
 
             if is_binary is False:
                 # if the data is a string, convert it to bytes
                 the_data = data['data'].encode('utf-8')
             else:
-                # if the data is bytes, use it as is
-                the_data = data['data']
+                # if the data is a base64 encoded string, convert it to bytes
+                encoded_data_bytes = data['data'].encode('utf-8')
+                # then decode the base64 encoded data
+                the_data = base64.b64decode(encoded_data_bytes)
 
             output_item = {
                 file_type: the_data,
@@ -208,6 +211,9 @@ class UniversalDataPublishProcessor(BaseProcessor):
                 'errors': [],
                 'warnings': []
             }
+            wsi = data.get('wigos_station_identifier')
+            if wsi is not None:
+                output_item['_meta']['properties']['wigos_station_identifier'] = wsi  # noqa
         except Exception as err:
             LOGGER.error(f'Failed to process data: {err}')
             return handle_error({err})
