@@ -177,7 +177,7 @@ class UniversalDataPublishProcessor(BaseProcessor):
             else:
                 # get geometry from wigos_station_identifier
                 wsi = data.get('wigos_station_identifier')
-                if wsi:
+                if wsi is not None:
                     # get the station metadata
                     stations = Stations(channel=channel)
                     station = stations.get_station(wsi)
@@ -212,7 +212,7 @@ class UniversalDataPublishProcessor(BaseProcessor):
                 'warnings': []
             }
             wsi = data.get('wigos_station_identifier')
-            if wsi:
+            if wsi is not None:
                 output_item['_meta']['properties']['wigos_station_identifier'] = wsi  # noqa
         except Exception as err:
             LOGGER.error(f'Failed to process data: {err}')
