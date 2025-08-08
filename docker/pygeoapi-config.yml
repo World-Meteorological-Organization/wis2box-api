@@ -47,7 +47,7 @@ metadata:
         name: ${WIS2BOX_CONTACT_NAME:-World Meteorological Organization}
         address: ${WIS2BOX_CONTACT_ADDRESS:-7bis, avenue de la Paix}
         city: ${WIS2BOX_CONTACT_CITY:-Geneva}
-        postalcode: ${WIS2BOX_CONTACT_POSTALCODE:"-1211"}
+        postalcode: ${WIS2BOX_CONTACT_POSTALCODE:-code 1211}
         country: ${WIS2BOX_CONTACT_COUNTRY:-Switzerland}
         email: ${WIS2BOX_CONTACT_EMAIL:-}
         url: ${WIS2BOX_CONTACT_URL:-https://wmo.int/contact-us}
