@@ -10,7 +10,7 @@ mcf:
     version: 1.0
 
 metadata:
-    identifier: urn:wmo:md:universal:test
+    identifier: urn:wmo:md:universal-test:test
     hierarchylevel: dataset
 
 identification:
@@ -59,3 +59,9 @@ contact:
         email: you@example.org
         hoursofservice: 0700h - 1500h UTC
         contactinstructions: email
+
+distribution:
+      license:
+          url: https://example.org/license
+          type: text/html
+          rel: license

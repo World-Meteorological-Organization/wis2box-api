@@ -32,13 +32,35 @@ from typing import Any, Tuple, Union
 import yaml
 
 
-from pygeoapi.api import API, APIRequest, F_HTML, pre_process
+from pygeoapi.api import API, APIRequest, F_HTML
 from pygeoapi.config import validate_config
 from pygeoapi.openapi import get_oas, load_openapi_document
 from pygeoapi.util import to_json, render_j2_template
 
 
 LOGGER = logging.getLogger(__name__)
+
+
+def pre_process(func):
+    """
+    Decorator that transforms an incoming Request instance specific to the
+    web framework (i.e. Flask, Starlette or Django) into a generic
+    :class:`APIRequest` instance.
+
+    :param func: decorated function
+
+    :returns: `func`
+    """
+
+    def inner(*args):
+        cls, req_in = args[:2]
+        req_out = APIRequest.from_flask(req_in, getattr(cls, 'locales', set()))
+        if len(args) > 2:
+            return func(cls, req_out, *args[2:])
+        else:
+            return func(cls, req_out)
+
+    return inner
 
 
 class Admin(API):

@@ -231,8 +231,8 @@ def test_universal_binary():
     data = {
         "inputs": {
             "data": "QlVGUgABAgQAABYAAFAAAAAAAAIAHAAH5gMVAAAAAAALAAABgMGWx1YAANUABOIAAAMTYzNDQAAAAAAAAAAAAAACCsJqenKiKpoaqpJ4AAAAAAAAAAAAAvzGqABiq+AldarlDSKJFBc//73w+6E0BQEAZDRftA7YAMgfQAZAAD//6YcwXPqFAIJkAuAf0HFAP////////////////////////////////////w4/0cj/4AH6AAAGQ/0AA////4BkP0QANV6/RAA0WoH0YJ/YmgZ/f2///7pgIBO///////f/////////gAAAB///////v/o/////w//ALJ7///w3Nzc3", # noqa
-            "channel": "universal-test-binary/data/core/weather/experimental",
-            "metadata_id": "urn:wmo:md:universal-test-binary",
+            "channel": "universal-test/data/core/weather/experimental",
+            "metadata_id": "urn:wmo:md:universal-test:test-binary",
             "notify": True,
             "filename": "my_data.bin",
             "datetime": "2025-06-23T15:03:00.000Z",

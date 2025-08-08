@@ -10,7 +10,7 @@ mcf:
     version: 1.0
 
 metadata:
-    identifier: urn:wmo:md:cap:test
+    identifier: urn:wmo:md:cap-test:test
     hierarchylevel: dataset
 
 identification:

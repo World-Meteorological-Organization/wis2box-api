@@ -2,9 +2,11 @@ cap2geojson
 eccodes==1.7.1
 elasticsearch==7.16.2
 elasticsearch-dsl==7.4.1
+filelock
 flask>=2.2.0
 flask-cors
 gevent==21.8.0
+jsonpatch
 json-merge-patch
 paho-mqtt
 pygeometa

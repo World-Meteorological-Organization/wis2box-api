@@ -22,9 +22,8 @@
 import os
 import logging
 
-from flask import Blueprint, request
+from flask import Blueprint, make_response, request
 
-from pygeoapi.flask_app import get_response
 from pygeoapi.util import yaml_load
 
 from wis2box_api.admin import Admin
@@ -44,8 +43,26 @@ ADMIN_BLUEPRINT = Blueprint(
     'admin',
     __name__,
     template_folder='templates',
-    static_folder='/static',
+    static_folder='/static'
 )
+
+
+def get_response(result: tuple):
+    """
+    Creates a Flask Response object and updates matching headers.
+
+    :param result: The result of the API call.
+                   This should be a tuple of (headers, status, content).
+
+    :returns: A Response instance
+    """
+
+    headers, status, content = result
+    response = make_response(content, status)
+
+    if headers:
+        response.headers = headers
+    return response
 
 
 @ADMIN_BLUEPRINT.route('/admin')
@@ -55,6 +72,7 @@ def admin():
 
     :returns: HTTP response
     """
+
     return get_response(admin_.admin(request))
 
 
@@ -65,6 +83,7 @@ def resources():
 
     :returns: HTTP response
     """
+
     if request.method == 'GET':
         return get_response(admin_.resources(request))
 
@@ -81,6 +100,7 @@ def resource(resource_id):
 
     :returns: HTTP response
     """
+
     if request.method == 'GET':
         return get_response(admin_.get_resource(request, resource_id))
 
