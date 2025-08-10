@@ -21,8 +21,8 @@ server:
         name: TinyDB
         connection: /tmp/pygeoapi-process-manager.db
         output_dir: /tmp/
-    icon: ${WIS2BOX_ICON:-/static/img/favicon.ico}
-    logo: ${WIS2BOX_LOGO:-/static/img/logo.png}
+    icon: ${WIS2BOX_ICON:-/oapi/static/img/favicon.ico}
+    logo: ${WIS2BOX_LOGO:-/oapi/static/img/logo.png}
 
 logging:
     level: ${WIS2BOX_LOGGING_LOGLEVEL}
