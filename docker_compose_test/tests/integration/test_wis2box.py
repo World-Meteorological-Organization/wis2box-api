@@ -568,6 +568,10 @@ def test_mappings_info():
             {
                 "id": "aws-template",
                 "title": "AWS"
+            },
+            {
+                "id": "climat-template",
+                "title": "climat-template"
             }
         ]
     }
