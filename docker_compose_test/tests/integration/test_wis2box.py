@@ -571,7 +571,7 @@ def test_mappings_info():
             },
             {
                 "id": "climat-template",
-                "title": "CLIMAT"
+                "title": "climate-template"
             }
         ]
     }
