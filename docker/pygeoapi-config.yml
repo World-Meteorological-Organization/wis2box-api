@@ -107,6 +107,11 @@ resources:
         processor:
             name: wis2box_api.plugins.process.bufr2geojson.Bufr2geojsonProcessor
 
+    bufr2UpperAirChart:
+        type: process
+        processor:
+            name: wis2box_api.plugins.process.bufr2UpperAirChart.Bufr2UpperAirChartProcessor
+
     cap2geojson:
         type: process
         processor:
