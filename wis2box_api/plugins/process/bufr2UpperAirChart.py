@@ -75,7 +75,7 @@ PROCESS_METADATA = {
         'path': {
             'title': {'en': 'Upper-Air Chart'},
             'description': {
-                'en': 'JSON object with base64-encoded PNG image of the upper-air chart'
+                'en': 'JSON object with base64-encoded PNG image of the upper-air chart' # noqa
             },
             'schema': {
                 'type': 'object',
@@ -89,6 +89,7 @@ PROCESS_METADATA = {
         }
     }
 }
+
 
 class Bufr2UpperAirChartProcessor(BaseProcessor):
     """BUFR to Upper-Air Sounding Chart Processor"""
@@ -143,7 +144,7 @@ class Bufr2UpperAirChartProcessor(BaseProcessor):
                             maxlen = len(vals)
                     except Exception:
                         LOGGER.info(f"Variable {var} not found in BUFR")
-                        arrays[var] = []        
+                        arrays[var] = []
                 # align arrays by index
                 for i in range(maxlen):
                     row = {}
@@ -153,17 +154,17 @@ class Bufr2UpperAirChartProcessor(BaseProcessor):
                         else:
                             row[var] = None  # missing if shorter
                     table.append(row)
-                        # get date/time
+                # get date/time
                 year = codes_get(bufr, "year")
                 month = codes_get(bufr, "month")
                 day = codes_get(bufr, "day")
                 hour = codes_get(bufr, "hour")
                 minute = codes_get(bufr, "minute")
                 # create datetime string
-                datetime_str = f"{year:04d}-{month:02d}-{day:02d} {hour:02d}:{minute:02d} UTC"            
+                datetime_str = f"{year:04d}-{month:02d}-{day:02d} {hour:02d}:{minute:02d} UTC" # noqa
                 codes_release(bufr)
         return table, datetime_str
-    
+
     def plot_sounding(self, rows, datetime_str):
         """
         Plot upper-air sounding (Temperature and Dewpoint vs Pressure)
@@ -172,7 +173,7 @@ class Bufr2UpperAirChartProcessor(BaseProcessor):
         :param datetime_str: string with date/time for title
         :returns: matplotlib Figure object
         """
-        
+
         p = []
         T = []
         Td = []
@@ -180,9 +181,7 @@ class Bufr2UpperAirChartProcessor(BaseProcessor):
         wdir = []
 
         for r in rows:
-            if (r.get("pressure") is None or 
-                r.get("airTemperature") is None or 
-                r.get("dewpointTemperature") is None):
+            if (r.get("pressure") is None or r.get("airTemperature") is None or r.get("dewpointTemperature") is None): # noqa
                 continue
             p.append(r["pressure"] / 100.0)  # Pa → hPa
             T.append(r["airTemperature"] - 273.15)   # K → °C
@@ -209,21 +208,19 @@ class Bufr2UpperAirChartProcessor(BaseProcessor):
 
         # Add wind barbs every Nth level
         skip = max(1, len(p)//30)  # thin out if too many levels
-        x_barb = np.full_like(p[::skip], fill_value=35.0)  # fixed x position for barbs
-        ax.barbs(x_barb, p[::skip], u[::skip], v[::skip],
-                length=6, pivot='middle')
+        x_barb = np.full_like(p[::skip], fill_value=35.0)  # fixed x position for barbs # noqa
+        ax.barbs(x_barb, p[::skip], u[::skip], v[::skip], length=6, pivot='middle') # noqa
 
         # Pressure axis (log scale, inverted)
         ax.set_yscale("log")
         ax.set_ylim(1050, 100)
-        #ax.invert_yaxis()
         ax.set_yticks([1000, 850, 700, 500, 300, 200, 100])
         ax.get_yaxis().set_major_formatter(plt.ScalarFormatter())
 
         ax.set_xlabel("Temperature (°C)")
         ax.set_ylabel("Pressure (hPa)")
         ax.set_title(f"Upper-Air Sounding\n{datetime_str}")
-        ax.legend()
+        ax.legend(loc="upper center")
 
         return fig
 
@@ -257,9 +254,9 @@ class Bufr2UpperAirChartProcessor(BaseProcessor):
 
         url = data.get('data_url')
         if url:
+            # Convert public URL to internal storage path
             if url.startswith(STORAGE_PUBLIC_URL):
-                # Convert public URL to internal storage path
-                url= url.replace(STORAGE_PUBLIC_URL, STORAGE_SOURCE)
+                url= url.replace(STORAGE_PUBLIC_URL, f'{STORAGE_SOURCE}/wis2box-public') # noqa
             # get the BUFR data from the URL
             response = requests.get(url)
             response.raise_for_status()

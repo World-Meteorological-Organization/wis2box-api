@@ -62,6 +62,11 @@ resources:
         processor:
             name: wis2box_api.plugins.process.station_info.StationInfoProcessor
 
+    station-msg-info:
+        type: process
+        processor:
+            name: wis2box_api.plugins.process.station_msg_info.StationMsgInfoProcessor
+
     dataset-info:
         type: process
         processor:
