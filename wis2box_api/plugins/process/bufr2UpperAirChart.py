@@ -200,7 +200,7 @@ class Bufr2UpperAirChartProcessor(BaseProcessor):
         v = -wspd * np.cos(np.deg2rad(wdir))
 
         # Create figure
-        fig, ax = plt.subplots(figsize=(7, 11))
+        fig, ax = plt.subplots(figsize=(6, 9))
 
         # Plot Temperature and Dewpoint vs Pressure
         ax.plot(T, p, 'r', label="Temperature")
@@ -219,7 +219,7 @@ class Bufr2UpperAirChartProcessor(BaseProcessor):
 
         ax.set_xlabel("Temperature (°C)")
         ax.set_ylabel("Pressure (hPa)")
-        ax.set_title(f"Upper-Air Sounding\n{datetime_str}")
+        ax.set_title(f"{datetime_str}")
         ax.legend(loc="upper center")
 
         return fig
@@ -277,7 +277,7 @@ class Bufr2UpperAirChartProcessor(BaseProcessor):
             buf,
             format="png",
             bbox_inches="tight",
-            dpi=80,
+            dpi=90,
             transparent=False
         )
         plt.close(fig)
