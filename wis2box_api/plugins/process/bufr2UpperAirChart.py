@@ -114,9 +114,7 @@ class Bufr2UpperAirChartProcessor(BaseProcessor):
             "airTemperature",
             "dewpointTemperature",
             "windSpeed",
-            "windDirection",
-            "nonCoordinateGeopotentialHeight",
-            "timePeriod"
+            "windDirection"
         ]
         table = []
         datetime_str = ''
