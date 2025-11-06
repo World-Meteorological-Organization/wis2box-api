@@ -21,8 +21,6 @@
 
 import json
 import logging
-import requests
-import time
 
 import paho.mqtt.publish as publish
 
@@ -75,7 +73,7 @@ class StorageEventProcessor(BaseProcessor):
         Initialize object
 
         :param processor_def: provider definition
-        :returns: wis2box_api.plugins.process.storage_event.StorageEventProcessor
+        :returns: this object
         """
 
         super().__init__(processor_def, PROCESS_METADATA)
@@ -95,7 +93,6 @@ class StorageEventProcessor(BaseProcessor):
 
         try:
             storage_event = data['storage_event']
-            force = data['force'] if 'force' in data else False
         except KeyError:
             msg = 'Missing required parameter: storage_event'
             LOGGER.error(msg)
@@ -108,7 +105,7 @@ class StorageEventProcessor(BaseProcessor):
                 'password': BROKER_PASSWORD
             }
             msg = storage_event
-            topic = f'wis2box/storage'
+            topic = 'wis2box/storage'
             publish.single(topic=topic, # noqa
                            payload=json.dumps(msg),
                            qos=1,
