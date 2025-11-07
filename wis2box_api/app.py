@@ -19,13 +19,11 @@
 #
 ###############################################################################
 
-import json
-import requests
-
-from flask import Flask, redirect, request
+from flask import Flask, redirect
 from pygeoapi.flask_app import BLUEPRINT as pygeoapi_blueprint
 
 from wis2box_api.flask_admin import ADMIN_BLUEPRINT
+from wis2box_api.sns_listener import SNS_BLUEPRINT
 
 app = Flask(__name__, static_url_path='/oapi/static')
 app.url_map.strict_slashes = False
@@ -33,45 +31,13 @@ app.url_map.strict_slashes = False
 app.register_blueprint(ADMIN_BLUEPRINT, url_prefix='/oapi')
 app.register_blueprint(pygeoapi_blueprint, url_prefix='/oapi')
 
+app.register_blueprint(SNS_BLUEPRINT)
+
 try:
     from flask_cors import CORS
     CORS(app)
 except ImportError:  # CORS needs to be handled by upstream server
     pass
-
-
-@app.route('/oapi/sns', methods=['POST'])
-def sns_listener():
-    """
-    Dedicated endpoint to receive raw AWS SNS notifications.
-    This bypasses the pygeoapi OGC API-Processes structure.
-    """
-    try:
-        data = request.get_json()
-    except Exception:
-        return {"error": "Invalid JSON"}, 400
-
-    if not data or "Type" not in data:
-        return {"error": "Missing SNS Type"}, 400
-
-    msg_type = data["Type"]
-
-    if msg_type == "SubscriptionConfirmation":
-        # Confirm subscription
-        subscribe_url = data.get("SubscribeURL")
-        if subscribe_url:
-            requests.get(subscribe_url)
-            return {"status": "subscription confirmed"}, 200
-        else:
-            return {"error": "Missing SubscribeURL"}, 400
-    elif msg_type == "Notification":
-        # Handle S3 event
-        message = json.loads(data.get("Message"))
-        # Here, implement your processing logic
-        print("Received S3 event:", message)
-        return {"status": "notification received"}, 200
-    else:
-        return {"error": "Unhandled message type"}, 400
 
 
 @app.route('/')
