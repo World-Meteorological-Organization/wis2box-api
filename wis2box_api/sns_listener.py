@@ -53,7 +53,7 @@ def sns_listener():
         return {"error": "Missing SNS Type"}, 400
 
     msg_type = data["Type"]
-
+    wis2box_storage_msg = None
     if msg_type == "SubscriptionConfirmation":
         # Confirm subscription
         subscribe_url = data.get("SubscribeURL")
@@ -63,9 +63,28 @@ def sns_listener():
         else:
             return {"error": "Missing SubscribeURL"}, 400
     elif msg_type == "Notification":
-        # Handle S3 event
-        message = json.loads(data.get("Message"))
-        LOGGER.info(f'Received S3 event: {message}')
+        # Handle AWS S3 event
+        aws_s3_event = json.loads(data.get("Message"))
+        LOGGER.info(f'Received S3 event: {aws_s3_event}')
+        for record in aws_s3_event["Records"]:
+            # Extract key fields from AWS record
+            event_name = record.get("eventName")
+            bucket_info = record.get("s3", {}).get("bucket", {})
+            object_info = record.get("s3", {}).get("object", {})
+
+            bucket_name = bucket_info.get("name")
+            object_key = object_info.get("key")
+
+            # Wrap it into a MinIO-style envelope
+            wis2box_storage_msg = {
+                "EventName": event_name.replace("ObjectCreated", "s3:ObjectCreated") # noqa
+                                        .replace("ObjectRemoved", "s3:ObjectRemoved"), # noqa
+                "Key": f"{bucket_name}/{object_key}",
+            }
+
+        if not wis2box_storage_msg:
+            return {"error": "No valid S3 records found"}, 400
+
         try:
             # publish notification on internal broker
             private_auth = {
@@ -74,7 +93,7 @@ def sns_listener():
             }
             topic = 'wis2box/storage'
             publish.single(topic=topic, # noqa
-                           payload=json.dumps(message),
+                           payload=json.dumps(wis2box_storage_msg),
                            qos=1,
                            retain=False,
                            hostname=BROKER_HOST,
