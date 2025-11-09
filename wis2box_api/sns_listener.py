@@ -73,7 +73,7 @@ def sns_listener():
             object_info = record.get("s3", {}).get("object", {})
 
             bucket_name = bucket_info.get("name")
-            object_key = object_info.get("key")
+            object_key = object_info.get("key").replace('%3A', ':')
 
             # Wrap it into a MinIO-style envelope
             wis2box_storage_msg = {
