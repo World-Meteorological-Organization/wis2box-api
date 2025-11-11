@@ -32,6 +32,8 @@ from cryptography import x509
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import padding
 
+from urllib.parse import urlparse
+
 from wis2box_api.wis2box.env import BROKER_HOST
 from wis2box_api.wis2box.env import BROKER_PORT
 from wis2box_api.wis2box.env import BROKER_USERNAME
@@ -64,10 +66,12 @@ def verify_sns_signature(msg) -> str:
     cert_url = msg['SigningCertURL']
     signature = msg['Signature']
 
-    # Only allow official AWS SNS certificate URLs
-    if not cert_url.startswith('https://sns.') \
-        or not cert_url.endswith('.amazonaws.com/SimpleNotificationService.pem'): # noqa
-        return 'Invalid SigningCertURL'
+    # check the URL belongs to AWS
+    parsed_url = urlparse(cert_url)
+    if not parsed_url.scheme == 'https' \
+        or not parsed_url.netloc.endswith('.amazonaws.com') \
+        or not cert_url.endswith('.pem') : # noqa
+        return f'Invalid SigningCertURL: {cert_url}'
 
     cert_pem = requests.get(cert_url, timeout=5).content
     cert = x509.load_pem_x509_certificate(cert_pem)
@@ -75,14 +79,16 @@ def verify_sns_signature(msg) -> str:
     signature = base64.b64decode(signature)
     string_to_sign = build_string_to_sign(msg).encode('utf-8')
 
-    # ✅ Verify using the public key in the cert
+    # verify signature
     pubkey = cert.public_key()
-    if pubkey.verify(signature,
-                     string_to_sign,
-                     padding.PKCS1v15(),
-                     hashes.SHA1()):
+    try:
+        pubkey.verify(signature,
+                      string_to_sign,
+                      padding.PKCS1v15(),
+                      hashes.SHA1())
         return 'Signature verified'
-    else:
+    except Exception as e:
+        LOGGER.warning(f'SNS signature verification error: {e}')
         return 'Signature verification failed'
 
 
@@ -104,7 +110,7 @@ def sns_listener():
     msg_type = data['Type']
     wis2box_storage_msg = None
     if msg_type == 'SubscriptionConfirmation':
-        # Confirm subscription
+        # confirm subscription
         subscribe_url = data.get('SubscribeURL')
         if subscribe_url:
             requests.get(subscribe_url)
@@ -115,9 +121,9 @@ def sns_listener():
         # verify notification signature
         verification_result = verify_sns_signature(data)
         if verification_result != 'Signature verified':
-            LOGGER.warning('Received SNS message with invalid signature')
+            LOGGER.warning(f'SNS signature verification failed: {verification_result}') # noqa
             return {'error': 'SNS signature verification failed'}, 400
-        # Handle AWS S3 event
+        # handle AWS S3 event notification
         aws_s3_event = json.loads(data.get('Message'))
         LOGGER.info(f'Received S3 event: {aws_s3_event}')
         if 'Records' not in aws_s3_event:
@@ -125,7 +131,6 @@ def sns_listener():
         for record in aws_s3_event['Records']:
             if record.get('eventSource') != 'aws:s3':
                 continue
-            # Extract key fields from AWS record
             event_name = record.get('eventName')
             bucket_info = record.get('s3', {}).get('bucket', {})
             object_info = record.get('s3', {}).get('object', {})
@@ -133,7 +138,7 @@ def sns_listener():
             bucket_name = bucket_info.get('name')
             object_key = object_info.get('key').replace('%3A', ':')
 
-            # Wrap it into a MinIO-style envelope
+            # build wis2box storage event message
             wis2box_storage_msg = {
                 'EventName': event_name.replace('ObjectCreated', 's3:ObjectCreated') # noqa
                                         .replace('ObjectRemoved', 's3:ObjectRemoved'), # noqa
