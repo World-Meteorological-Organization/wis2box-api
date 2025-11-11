@@ -115,7 +115,7 @@ def sns_listener():
         # verify notification signature
         verification_result = verify_sns_signature(data)
         if verification_result != 'Signature verified':
-            LOGGER.warning(f'Received SNS message with invalid signature')
+            LOGGER.warning('Received SNS message with invalid signature')
             return {'error': 'SNS signature verification failed'}, 400
         # Handle AWS S3 event
         aws_s3_event = json.loads(data.get('Message'))
