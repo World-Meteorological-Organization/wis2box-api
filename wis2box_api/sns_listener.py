@@ -32,6 +32,9 @@ from wis2box_api.wis2box.env import BROKER_PORT
 from wis2box_api.wis2box.env import BROKER_USERNAME
 from wis2box_api.wis2box.env import BROKER_PASSWORD
 
+from wis2box_api.wis2box.env import STORAGE_INCOMING, STORAGE_PUBLIC
+
+
 LOGGER = logging.getLogger(__name__)
 
 SNS_BLUEPRINT = Blueprint('sns_listener', __name__)
@@ -66,7 +69,11 @@ def sns_listener():
         # Handle AWS S3 event
         aws_s3_event = json.loads(data.get("Message"))
         LOGGER.info(f'Received S3 event: {aws_s3_event}')
+        if "Records" not in aws_s3_event:
+            return {"error": "No S3 records found"}, 400
         for record in aws_s3_event["Records"]:
+            if record.get("eventSource") != "aws:s3":
+                continue
             # Extract key fields from AWS record
             event_name = record.get("eventName")
             bucket_info = record.get("s3", {}).get("bucket", {})
@@ -84,6 +91,11 @@ def sns_listener():
 
         if not wis2box_storage_msg:
             return {"error": "No valid S3 records found"}, 400
+
+        if bucket_name not in [STORAGE_INCOMING, STORAGE_PUBLIC]:
+            # only publish notification if the bucket matches the expected ones
+            LOGGER.warning(f'Received S3 event for unknown bucket: {bucket_name}') # noqa
+            return {"error": "Invalid bucket"}, 400
 
         try:
             # publish notification on internal broker
