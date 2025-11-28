@@ -26,9 +26,6 @@ echo "START /entrypoint.sh"
 
 set +e
 
-#ensure environment-variables are available for cronjob
-printenv | grep -v "no_proxy" >> /etc/environment
-
 # gunicorn env settings with defaults
 SCRIPT_NAME="/"
 CONTAINER_NAME="wis2box-api"
@@ -51,22 +48,17 @@ function error() {
 mkdir -p /data/wis2box/mappings
 
 # Workdir
-cd /pygeoapi
-
-# Lock all Python files (for gunicorn hot reload)
-find . -type f -name "*.py" | xargs chmod -R 0444
+cd /wis2box-api
 
 echo "Trying to generate OpenAPI document"
-pygeoapi openapi generate ${PYGEOAPI_CONFIG} --output-file ${PYGEOAPI_OPENAPI}
-# pygeoapi openapi validate ${PYGEOAPI_OPENAPI}
+/venv/bin/pygeoapi openapi generate ${PYGEOAPI_CONFIG} --output-file ${PYGEOAPI_OPENAPI}
 
 [[ $? -ne 0 ]] && error "ERROR: OpenAPI document could not be generated"
 
 echo "openapi.yml generated continue to pygeoapi"
 
-# ensure cron is running
-service cron start
-service cron status
+echo "Starting cron"
+/usr/local/bin/supercronic /app/docker/wis2box-api.cron &
 
 case ${entry_cmd} in
     # Run pygeoapi server
@@ -75,7 +67,7 @@ case ${entry_cmd} in
         [[ "${SCRIPT_NAME}" = '/' ]] && export SCRIPT_NAME="" && echo "make SCRIPT_NAME empty from /"
 
         echo "Start gunicorn name=${CONTAINER_NAME} on ${CONTAINER_HOST}:${CONTAINER_PORT} with ${WSGI_WORKERS} workers and SCRIPT_NAME=${SCRIPT_NAME}"
-        exec gunicorn --workers ${WSGI_WORKERS} \
+        exec /venv/bin/gunicorn --workers ${WSGI_WORKERS} \
                 --worker-class=${WSGI_WORKER_CLASS} \
                 --timeout ${WSGI_WORKER_TIMEOUT} \
                 --name=${CONTAINER_NAME} \
