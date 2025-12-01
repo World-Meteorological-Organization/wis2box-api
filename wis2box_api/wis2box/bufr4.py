@@ -377,7 +377,7 @@ class ObservationDataBUFR():
             for (descr, replacement) in corrections.items():
                 if descr == uedescriptors:
                     LOGGER.debug(f'Applying correction for descriptor {descr}')  # noqa
-                    for (eckey, ecvalue) in replacement.items():                      
+                    for (eckey, ecvalue) in replacement.items():
                         codes_set(subset_out, eckey, ecvalue)
 
             isodate_str = isodate.strftime('%Y%m%dT%H%M%S')
