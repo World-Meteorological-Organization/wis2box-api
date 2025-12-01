@@ -235,6 +235,9 @@ class ObservationDataBUFR():
         # get expanded sequence
         descriptors = codes_get_array(subset, "expandedDescriptors")
 
+        # get unexpanded sequence
+        uedescriptors = codes_get_array(subset, "unexpandedDescriptors")
+
         # unpack
         codes_set(subset, "unpack", True)
 
@@ -368,6 +371,14 @@ class ObservationDataBUFR():
 
             for (name, p) in zip(TIME_NAMES, TIME_PATTERNS):
                 codes_set(subset_out, name, int(isodate.strftime(p)))
+
+            # do failsafe check and replacement
+            corrections = self.stations.get_corrections(wsi=wsi)
+            for (descr, replacement) in corrections.items():
+                if descr == uedescriptors:
+                    LOGGER.debug(f'Applying correction for descriptor {descr}')  # noqa
+                    for (eckey, ecvalue) in replacement.items():                      
+                        codes_set(subset_out, eckey, ecvalue)
 
             isodate_str = isodate.strftime('%Y%m%dT%H%M%S')
 
