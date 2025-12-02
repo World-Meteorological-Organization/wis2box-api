@@ -64,7 +64,7 @@ RUN cd /app \
     && chmod +x /app/docker/es-entrypoint.sh /app/docker/wait-for-elasticsearch.sh
 
 # Install Supercronic for job management
-RUN curl -fsSLO "https://github.com/aptible/supercronic/releases/download/v0.2.38/supercronic-linux-amd64" && \
+RUN curl -fsSLO "https://github.com/aptible/supercronic/releases/download/v0.2.39/supercronic-linux-amd64" && \
     chmod +x supercronic-linux-amd64 && \
     mv supercronic-linux-amd64 /usr/local/bin/supercronic
 
