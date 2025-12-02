@@ -97,11 +97,6 @@ resources:
         processor:
             name: pywcmp.pygeoapi_plugin.WCMP2KPIProcessor
             
-    wmo-get-ra:
-        type: process
-        processor:
-            name: wis2box_api.plugins.process.wmo_ra.WMORAProcessor
-
     bufr2geojson:
         type: process
         processor:
