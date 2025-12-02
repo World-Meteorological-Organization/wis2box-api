@@ -1,4 +1,5 @@
 cap2geojson
+cryptography==46.0.3
 eccodes==1.7.1
 elasticsearch==7.16.2
 elasticsearch-dsl==7.4.1
