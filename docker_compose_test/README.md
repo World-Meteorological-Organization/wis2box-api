@@ -10,7 +10,7 @@ test.env contains the environment variables for the test.
 Run the docker-compose stack in the background:
 
 ```bash
-docker-compose up -d --build
+docker compose up -d --build
 ```
 
 

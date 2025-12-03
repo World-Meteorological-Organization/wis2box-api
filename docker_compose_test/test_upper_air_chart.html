@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>API Base64 PNG Viewer</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 2rem;
+      background: #f5f5f5;
+    }
+    #result {
+      margin-top: 20px;
+    }
+    img {
+      border: 1px solid #333;
+      max-width: 100%;
+    }
+    pre {
+      background: #eee;
+      padding: 1rem;
+      overflow-x: auto;
+    }
+    #inputRow {
+      margin-bottom: 1rem;
+    }
+    #dataUrl {
+      width: 60%;
+      padding: 0.5rem;
+      font-size: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>PNG Viewer from API</h1>
+  <div id="inputRow">
+    <label for="dataUrl">Data URL:</label>
+    <input type="text" id="dataUrl" value="https://wis.nms.gov.bz/data/2025-07-29/wis/urn:wmo:md:bz-nms:belize-upper-air-messages/WIGOS_0-20000-0-78583_20250729T111100.bufr4" />
+    <button id="fetchBtn">Fetch & Show PNG</button>
+  </div>
+  <div id="result"></div>
+
+  <script>
+    document.getElementById("fetchBtn").addEventListener("click", async () => {
+      const resultDiv = document.getElementById("result");
+      const dataUrl = document.getElementById("dataUrl").value.trim();
+      resultDiv.innerHTML = "<p>Loading...</p>";
+
+      try {
+        const response = await fetch("http://localhost:4343/oapi/processes/bufr2UpperAirChart/execution", {
+          method: "POST",
+          headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            inputs: {
+              data_url: dataUrl
+            }
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (data.base64_png) {
+          const img = document.createElement("img");
+          img.src = "data:image/png;base64," + data.base64_png;
+          resultDiv.innerHTML = "";
+          resultDiv.appendChild(img);
+        } else {
+          resultDiv.innerHTML = "<pre>No base64_png found in response.</pre>";
+        }
+      } catch (err) {
+        resultDiv.innerHTML = "<pre>Error: " + err.message + "</pre>";
+      }
+    });
+  </script>
+</body>
+</html>
