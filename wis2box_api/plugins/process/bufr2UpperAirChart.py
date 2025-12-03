@@ -26,6 +26,7 @@ import tempfile
 
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.projections import register_projection
 
 import requests
 
@@ -39,6 +40,10 @@ from eccodes import (
 )
 
 from wis2box_api.wis2box.env import STORAGE_PUBLIC_URL, STORAGE_SOURCE
+
+# 👇 This registers the projection globally with matplotlib
+from wis2box_api.projections.skewt_projection import SkewXAxes
+register_projection(SkewXAxes)
 
 LOGGER = logging.getLogger(__name__)
 
@@ -163,62 +168,67 @@ class Bufr2UpperAirChartProcessor(BaseProcessor):
                 codes_release(bufr)
         return table, datetime_str
 
-    def plot_sounding(self, rows, datetime_str):
+    def plot_sounding_skewt(self, rows, datetime_str):
         """
-        Plot upper-air sounding (Temperature and Dewpoint vs Pressure)
-        with wind barbs.
-        :param rows: list of dicts with sounding data
-        :param datetime_str: string with date/time for title
+        Plot upper-air sounding as a Skew-T log-P diagram
+        (Temperature & Dewpoint only).
+
+        :param rows: list of dicts with keys:
+                    'pressure',
+                    'airTemperature',
+                    'dewpointTemperature'
+                    (in Pa, K, K)
+        :param datetime_str: string for plot title
         :returns: matplotlib Figure object
         """
 
-        p = []
-        T = []
-        Td = []
-        wspd = []
-        wdir = []
+        # --- Extract and clean data ---
+        p, T, Td = [], [], []
 
+        # check for rows having all required data and convert units
         for r in rows:
-            if (r.get("pressure") is None or r.get("airTemperature") is None or r.get("dewpointTemperature") is None): # noqa
+            if not all(r.get(k) is not None for k in ("pressure", "airTemperature", "dewpointTemperature")): # noqa
                 continue
-            p.append(r["pressure"] / 100.0)  # Pa → hPa
+            p.append(r["pressure"] / 100.0)      # Pa → hPa
             T.append(r["airTemperature"] - 273.15)   # K → °C
             Td.append(r["dewpointTemperature"] - 273.15)
-            wspd.append(r.get("windSpeed", np.nan))
-            wdir.append(r.get("windDirection", np.nan))
+
+        if len(p) == 0:
+            raise ValueError("No valid data points in 'rows' for plotting.")
 
         p = np.array(p)
         T = np.array(T)
         Td = np.array(Td)
-        wspd = np.array(wspd)
-        wdir = np.array(wdir)
 
-        # Compute wind components for barbs
-        u = -wspd * np.sin(np.deg2rad(wdir))
-        v = -wspd * np.cos(np.deg2rad(wdir))
+        # --- Create Skew-T figure ---
+        fig = plt.figure(figsize=(5.5, 7.5))
+        ax = fig.add_subplot(projection='skewx')
 
-        # Create figure
-        fig, ax = plt.subplots(figsize=(6, 9))
+        # --- Plot Temperature and Dewpoint profiles ---
+        ax.semilogy(T, p, color='red', linewidth=1.5, label='Temperature')
+        ax.semilogy(Td, p, color='green', linewidth=1.5, label='Dewpoint')
 
-        # Plot Temperature and Dewpoint vs Pressure
-        ax.plot(T, p, 'r', label="Temperature")
-        ax.plot(Td, p, 'g', label="Dewpoint")
-
-        # Add wind barbs every Nth level
-        skip = max(1, len(p)//30)  # thin out if too many levels
-        x_barb = np.full_like(p[::skip], fill_value=35.0)  # fixed x position for barbs # noqa
-        ax.barbs(x_barb, p[::skip], u[::skip], v[::skip], length=6, pivot='middle') # noqa
-
-        # Pressure axis (log scale, inverted)
-        ax.set_yscale("log")
+        # --- Formatting axes ---
         ax.set_ylim(1050, 100)
-        ax.set_yticks([1000, 850, 700, 500, 300, 200, 100])
-        ax.get_yaxis().set_major_formatter(plt.ScalarFormatter())
+        ax.set_xlim(-50, 50)
 
+        from matplotlib.ticker import (MultipleLocator, NullFormatter, ScalarFormatter) # noqa
+
+        ax.yaxis.set_major_formatter(ScalarFormatter())
+        ax.yaxis.set_minor_formatter(NullFormatter())
+        ax.set_yticks([1000, 850, 700, 500, 300, 200, 100])
+
+        ax.xaxis.set_major_locator(MultipleLocator(10))
         ax.set_xlabel("Temperature (°C)")
         ax.set_ylabel("Pressure (hPa)")
-        ax.set_title(f"{datetime_str}")
-        ax.legend(loc="upper center")
+
+        # --- Add 0°C reference line ---
+        ax.axvline(0, color='C0', linestyle='--', linewidth=1)
+
+        # --- Grid, legend, title ---
+        ax.grid(True)
+        ax.legend(loc='best')
+        ax.set_title(f"Skew-T log-P Diagram\n{datetime_str}")
 
         return fig
 
@@ -267,14 +277,13 @@ class Bufr2UpperAirChartProcessor(BaseProcessor):
         if not rows:
             return self.handle_error('No valid sounding data found in BUFR')
         # plot the sounding
-        fig = self.plot_sounding(rows, datetime_str)
+        fig = self.plot_sounding_skewt(rows, datetime_str)
 
         # save figure to bytes buffer
         buf = io.BytesIO()
         plt.savefig(
             buf,
             format="png",
-            bbox_inches="tight",
             dpi=90,
             transparent=False
         )
