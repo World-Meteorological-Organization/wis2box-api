@@ -17,3 +17,4 @@ minio==7.2.7
 bufr2geojson==0.7.1
 geopy==2.4.1
 shapely==2.1.1
+matplotlib==3.9.2
