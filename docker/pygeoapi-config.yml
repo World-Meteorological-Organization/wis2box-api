@@ -141,3 +141,8 @@ resources:
       type: process
       processor:
         name: wis2box_api.plugins.process.universal_data.UniversalDataPublishProcessor
+
+    wis2box-storage-event:
+      type: process
+      processor:
+        name: wis2box_api.plugins.process.storage_event.StorageEventProcessor
