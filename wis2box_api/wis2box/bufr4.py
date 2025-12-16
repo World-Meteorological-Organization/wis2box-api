@@ -69,9 +69,9 @@ def get_bufr_overrides(metadata_id: str):
 
     :returns: `dict`, of bufr overrides
     """
-    from wis2box_api.wis2box.env import DOCKER_API_URL
+    from wis2box_api.wis2box.env import WIS2BOX_DOCKER_API_URL
     import requests
-    url = f'{DOCKER_API_URL}/collections/discovery-metadata/items/{metadata_id}' # noqa
+    url = f'{WIS2BOX_DOCKER_API_URL}/collections/discovery-metadata/items/{metadata_id}' # noqa
     overrides_stations = {}
     overrides_any = {}
     try:
