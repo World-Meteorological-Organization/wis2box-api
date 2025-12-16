@@ -396,7 +396,6 @@ class ObservationDataBUFR():
                     latitude = codes_get(subset_out, "#1#latitude")
                 else:
                     latitude = CODES_MISSING_DOUBLE
-                
                 if 7030 in descriptors:
                     elevation = codes_get(subset_out,"#1#heightOfStationGroundAboveMeanSeaLevel")  # noqa
                 else:
