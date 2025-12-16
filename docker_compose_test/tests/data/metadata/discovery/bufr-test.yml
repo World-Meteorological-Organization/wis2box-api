@@ -5,7 +5,7 @@ wis2box:
     centre_id: bufr-test
     data_mappings:
         plugins:
-    bufr_overrides: 
+    bufr_override: 
         "WIGOS_0-20000-0-16344": 
             '#1#heightOfStationGroundAboveMeanSeaLevel': 150
         any:
