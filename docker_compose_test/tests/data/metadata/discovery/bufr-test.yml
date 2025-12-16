@@ -5,6 +5,11 @@ wis2box:
     centre_id: bufr-test
     data_mappings:
         plugins:
+    bufr_overrides: 
+        "WIGOS_0-20000-0-16344": 
+            '#1#heightOfStationGroundAboveMeanSeaLevel': 150
+        any:
+            'bufrHeaderCentre': 98
 
 mcf:
     version: 1.0
