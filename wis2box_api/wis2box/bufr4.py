@@ -69,26 +69,25 @@ def get_bufr_overrides(metadata_id: str):
 
     :returns: `dict`, of bufr overrides
     """
-    from wis2box_api.wis2box.env import WIS2BOX_DOCKER_API_URL
     import requests
-    url = f'{WIS2BOX_DOCKER_API_URL}/collections/discovery-metadata/items/{metadata_id}' # noqa
+    url = f'http://localhost/oapi/collections/discovery-metadata/items/{metadata_id}' # noqa
     overrides_stations = {}
-    overrides_any = {}
+    overrides_all = {}
     try:
         resp = requests.get(url)
         resp.raise_for_status()
         item = resp.json()
         wis2box_config = item.get('wis2box', {})
-        for key, value in wis2box_config.get('bufr_overrides', {}):
-            if key != 'any' and len(key.split('-')) == 4:
+        for key, value in wis2box_config.get('bufr_overrides', {}).items():
+            if key != 'all' and len(key.split('-')) == 4:
                 overrides_stations[key] = value
-            elif key == 'any':
-                overrides_any = value
+            elif key == 'all':
+                overrides_all = value
             else:
-                LOGGER.warning(f'Invalid bufr_overrides key={key}, must be "any" or a WSI') # noqa
+                LOGGER.warning(f'Invalid bufr_overrides key={key}, must be "all" or a WSI') # noqa
     except Exception as err:
         LOGGER.error(f'Error fetching bufr_overrides, url={url}: {err}')
-    return {'stations': overrides_stations, 'any': overrides_any}
+    return {'stations': overrides_stations, 'all': overrides_all}
 
 
 class ObservationDataBUFR():
@@ -110,7 +109,7 @@ class ObservationDataBUFR():
         self.output_items = []
         self.overrides = {
             'stations': overrides.get('stations', {}) if overrides else {},
-            'any': overrides.get('any', {}) if overrides else {}
+            'all': overrides.get('all', {}) if overrides else {}
         }
 
     # return an array of output data
@@ -367,17 +366,19 @@ class ObservationDataBUFR():
             # add bufr_overrides
             for key, value in self.overrides['stations'].get(wsi, {}).items():
                 try:
+                    if key == '#1#heightOfStationGroundAboveMeanSeaLevel':
+                        LOGGER.warning(f'Overriding key={key}, please set this value using elevation in station metadata instead')  # noqa
                     LOGGER.debug(f'Applying station override {key}={value} for wsi={wsi}')  # noqa
                     codes_set(subset_out, key, value)
                 except Exception as err:
                     msg = f'Error applying station override {key}:{value} for wsi={wsi}: {err}'  # noqa
                     errors.append(msg)
-            for key, value in self.overrides['any'].items():
+            for key, value in self.overrides['all'].items():
                 try:
                     LOGGER.debug(f'Applying any override {key}={value} for wsi={wsi}')  # noqa
                     codes_set(subset_out, key, value)
                 except Exception as err:
-                    msg = f'Error applying any override {key}:{value} for wsi={wsi}: {err}'  # noqa
+                    msg = f'Error applying global override {key}:{value} for wsi={wsi}: {err}'  # noqa
                     errors.append(msg)
 
             isodate_str = isodate.strftime('%Y%m%dT%H%M%S')
@@ -388,15 +389,16 @@ class ObservationDataBUFR():
             # set location AFTER overrides have been applied
             try:
                 if any(x in descriptors for x in (6001, 6002)):
-                    longitude = codes_get(subset, "#1#longitude")
+                    longitude = codes_get(subset_out, "#1#longitude")
                 else:
                     longitude = CODES_MISSING_DOUBLE
                 if any(x in descriptors for x in (5001, 5002)):
-                    latitude = codes_get(subset, "#1#latitude")
+                    latitude = codes_get(subset_out, "#1#latitude")
                 else:
                     latitude = CODES_MISSING_DOUBLE
+                
                 if 7030 in descriptors:
-                    elevation = codes_get(subset,"#1#heightOfStationGroundAboveMeanSeaLevel")  # noqa
+                    elevation = codes_get(subset_out,"#1#heightOfStationGroundAboveMeanSeaLevel")  # noqa
                 else:
                     elevation = CODES_MISSING_DOUBLE
 

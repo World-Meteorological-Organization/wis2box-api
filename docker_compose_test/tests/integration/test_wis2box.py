@@ -457,7 +457,7 @@ def test_bufr2bufr():
     data = {
         'inputs': {
             'data': 'SVNNRDAyIExJSUIgMjEwMDAwIFJSQQ0NCkJVRlIAAOwEAAAWAABQAAAAAAACABAAB+YDFQAAAAAACQAAAYDHVgAAwQAgrCanpyoiqaGqqSeQEBAQEBAQEBAQL8xqgAYqvgJXWq5Q0iiRQXP/+98PuhNAUBAGQ0X7QO2ADIH0AGQAA//+mHMFz6hQCCZALgH9BxQD////////////////////////////////////8OP9HI/+AB+gAABkP9AAP///+AZD9EADVev0QANFqB9GCf2JoGf39v//+6YCATv//////3/////////4AAAAf//////7/6P////8P/wCye///8A3Nzc3DQ0K', # noqa
-            'metadata_id': 'urn:wmo:md:bufr:test',
+            'metadata_id': 'urn:wmo:md:bufr-test:test',
             'channel': 'bufr-test/data/core/weather/surface-based-observations/synop', # noqa
             'notify': True
         },
@@ -468,7 +468,7 @@ def test_bufr2bufr():
         'messages published': 1,
         'data_items': [
             {
-                'data': 'QlVGUgABAgQAABYAAFAAAAAAAAIAHAAH5gMVAAAAAAALAAABgMGWx1YAANUABOIAAAMTYzNDQAAAAAAAAAAAAAACCsJqenKiKpoaqpJ4AAAAAAAAAAAAAvzGqABiq+AldarlDSKJFBc//73w+6E0BQEAZDRftA7YAMgfQAZAAD//6YcwXPqFAIJkAuAf0HFAP////////////////////////////////////w4/0cj/4AH6AAAGQ/0AA////4BkP0QANV6/RAA0WoH0YJ/YmgZ/f2///7pgIBO///////f/////////gAAAB///////v/o/////w//ALJ7///w3Nzc3', # noqa
+                'data': 'QlVGUgABAgQAABYAAGIAAAAAAAIAHAAH5gMVAAAAAAALAAABgMGWx1YAANUABOIAAAMTYzNDQAAAAAAAAAAAAAACCsJqenKiKpoaqpJ4AAAAAAAAAAAAAvzGqABiq+AldarlDSKJFBc//73w+6E0BQEAZDRftA7YAMgfQAZAAD//6YcwXPqFAIJkAuAf0HFAP////////////////////////////////////w4/0cj/4AH6AAAGQ/0AA////4BkP0QANV6/RAA0WoH0YJ/YmgZ/f2///7pgIBO///////f/////////gAAAB///////v/o/////w//ALJ7///w3Nzc3', # noqa
                 'filename': 'WIGOS_0-20000-0-16344_20220321T000000.bufr4',
                 '_meta': {
                     'id': 'WIGOS_0-20000-0-16344_20220321T000000',
@@ -476,7 +476,7 @@ def test_bufr2bufr():
                     'data_date': '2022-03-21T00:00:00',
                     'geometry': {
                         'type': 'Point',
-                        'coordinates': [16.39639, 39.33056, 1669.0]
+                        'coordinates': [16.39639, 39.33056, 150.0]
                     }
                 },
                 'channel': data['inputs']['channel']
