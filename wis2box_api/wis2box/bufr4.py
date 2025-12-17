@@ -367,7 +367,7 @@ class ObservationDataBUFR():
             for key, value in self.overrides['stations'].get(wsi, {}).items():
                 try:
                     if key == '#1#heightOfStationGroundAboveMeanSeaLevel':
-                        LOGGER.warning(f'Overriding key={key}, please set this value using elevation in station metadata instead')  # noqa
+                        LOGGER.warning(f'Overriding key={key}')
                     LOGGER.debug(f'Applying station override {key}={value} for wsi={wsi}')  # noqa
                     codes_set(subset_out, key, value)
                 except Exception as err:
