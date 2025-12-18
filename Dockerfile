@@ -42,7 +42,7 @@ RUN pip3 install --no-cache-dir https://github.com/geopython/pygeoapi/archive/re
 # install WMO software
 RUN pip3 install --no-cache-dir \
     https://github.com/World-Meteorological-Organization/pywis-topics/archive/refs/tags/0.3.5.zip \
-    https://github.com/World-Meteorological-Organization/pywcmp/archive/refs/tags/0.12.4.zip \
+    https://github.com/World-Meteorological-Organization/pywcmp/archive/refs/tags/0.13.1.zip \
     https://github.com/wmo-cop/pyoscar/archive/refs/tags/0.9.0.zip
 
 RUN pywcmp bundle sync
@@ -64,7 +64,7 @@ RUN cd /app \
     && chmod +x /app/docker/es-entrypoint.sh /app/docker/wait-for-elasticsearch.sh
 
 # Install Supercronic for job management
-RUN curl -fsSLO "https://github.com/aptible/supercronic/releases/download/v0.2.39/supercronic-linux-amd64" && \
+RUN curl -fsSLO "https://github.com/aptible/supercronic/releases/download/v0.2.41/supercronic-linux-amd64" && \
     chmod +x supercronic-linux-amd64 && \
     mv supercronic-linux-amd64 /usr/local/bin/supercronic
 
