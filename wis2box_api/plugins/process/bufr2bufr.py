@@ -27,6 +27,7 @@ from pygeoapi.process.base import BaseProcessor
 from wis2box_api.wis2box.handle import handle_error
 from wis2box_api.wis2box.handle import DataHandler
 from wis2box_api.wis2box.bufr4 import ObservationDataBUFR
+from wis2box_api.wis2box.bufr4 import get_bufr_overrides
 
 LOGGER = logging.getLogger(__name__)
 
@@ -133,7 +134,8 @@ class BufrPublishProcessor(BaseProcessor):
             encoded_data_bytes = base64_encoded_data.encode('utf-8')
             # Decode base64 encoded data
             input_bytes = base64.b64decode(encoded_data_bytes)
-            obs_bufr = ObservationDataBUFR(input_bytes, channel)
+            overrides = get_bufr_overrides(metadata_id) if metadata_id else None # noqa
+            obs_bufr = ObservationDataBUFR(input_bytes, channel, overrides)
             LOGGER.info(f'Size of input_bytes: {len(input_bytes)}')
         except Exception as err:
             return handle_error(f'bufr2bufr raised Exception: {err}') # noqa

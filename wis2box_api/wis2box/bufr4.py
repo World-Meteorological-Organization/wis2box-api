@@ -60,11 +60,51 @@ HEADERS = ["edition", "masterTableNumber", "bufrHeaderCentre",
            "typicalMinute", "typicalSecond",
            "numberOfSubsets", "observedData", "compressedData"]
 
+STATION_METADATA_ELEMENTS = (
+    '#1#heightOfBarometerAboveMeanSeaLevel',
+    '#1#heightOfStationGroundAboveMeanSeaLevel',
+    '#1#latitude',
+    '#1#longitude',
+    '#1#regionNumber',
+    '#1#stationOrSiteName'
+)
+
+
+def get_bufr_overrides(metadata_id: str):
+    """
+    BufrOverrides initializer
+
+    :param metadata_id: `str` of metadata identifier
+
+    :returns: `dict`, of bufr overrides
+    """
+    import requests
+    url = f'http://localhost/oapi/collections/discovery-metadata/items/{metadata_id}' # noqa
+    overrides_stations = {}
+    overrides_all = {}
+    try:
+        resp = requests.get(url)
+        resp.raise_for_status()
+        item = resp.json()
+        wis2box_config = item.get('wis2box', {})
+        for key, value in wis2box_config.get('bufr_overrides', {}).items():
+            if key != 'all' and len(key.split('-')) == 4:
+                overrides_stations[key] = value
+            elif key == 'all':
+                overrides_all = value
+            else:
+                LOGGER.warning(f'Invalid bufr_overrides key={key}, must be "all" or a WSI') # noqa
+    except Exception as err:
+        LOGGER.error(f'Error fetching bufr_overrides, url={url}: {err}')
+    return {'stations': overrides_stations, 'all': overrides_all}
+
 
 class ObservationDataBUFR():
-    """Oservation data in bufr format"""
+    """Observation data in bufr format"""
 
-    def __init__(self, input_bytes: bytes, channel: str = None) -> None:
+    def __init__(self, input_bytes: bytes,
+                 channel: str = None,
+                 overrides: dict = None):
         """
         ObservationDataBufr initializer
 
@@ -76,6 +116,10 @@ class ObservationDataBUFR():
         self.input_bytes = input_bytes
         self.stations = Stations(channel)
         self.output_items = []
+        self.overrides = {
+            'stations': overrides.get('stations', {}) if overrides else {},
+            'all': overrides.get('all', {}) if overrides else {}
+        }
 
     # return an array of output data
     def process_data(
@@ -274,38 +318,6 @@ class ObservationDataBUFR():
             warnings.append(err)
 
         try:
-            if any(x in descriptors for x in (6001, 6002)):
-                longitude = codes_get(subset, "#1#longitude")
-            else:
-                longitude = CODES_MISSING_DOUBLE
-            if any(x in descriptors for x in (5001, 5002)):
-                latitude = codes_get(subset, "#1#latitude")
-            else:
-                latitude = CODES_MISSING_DOUBLE
-            if 7030 in descriptors:
-                elevation = codes_get(subset,"#1#heightOfStationGroundAboveMeanSeaLevel")  # noqa
-            else:
-                elevation = CODES_MISSING_DOUBLE
-
-            if CODES_MISSING_DOUBLE in (longitude, latitude):
-                location = None
-            else:
-                location = {
-                    "type": "Point",
-                    "coordinates": [round(longitude, 5),
-                                    round(latitude, 5)]
-                }
-                if elevation != CODES_MISSING_DOUBLE:
-                    location['coordinates'].append(round(elevation))
-            if location is None or None in location['coordinates']:
-                msg = 'Missing location in BUFR'
-                LOGGER.info(msg)
-                raise Exception(msg)
-        except Exception as err:
-            msg = f'Can not parse location from subset with wsi={temp_wsi} (tsi={temp_tsi}): {err}' # noqa
-            LOGGER.info(msg)
-
-        try:
             # the following should always be present
             yyyy = codes_get(subset, "#1#year")
             mm = codes_get(subset, "#1#month")
@@ -352,15 +364,6 @@ class ObservationDataBUFR():
             codes_set(subset_out, '#1#wigosLocalIdentifierCharacter', tsi)
             codes_bufr_copy_data(subset, subset_out)
 
-            if location is None or None in location['coordinates']:
-                msg = f'Missing coordinates for wsi={temp_wsi} (tsi={temp_tsi}, using coordinates from station metadata'  # noqa
-                warnings.append(msg)
-                location = self.stations.get_geometry(wsi)
-                long, lat, elev = location.get('coordinates')
-                codes_set(subset_out, '#1#longitude', long)
-                codes_set(subset_out, '#1#latitude', lat)
-                codes_set(subset_out, '#1#heightOfStationGroundAboveMeanSeaLevel', elev)  # noqa
-
             if '/' in data_date:
                 data_date = data_date.split('/')[1]
 
@@ -369,10 +372,66 @@ class ObservationDataBUFR():
             for (name, p) in zip(TIME_NAMES, TIME_PATTERNS):
                 codes_set(subset_out, name, int(isodate.strftime(p)))
 
+            # add bufr_overrides
+            for key, value in self.overrides['stations'].get(wsi, {}).items():
+                try:
+                    if key in STATION_METADATA_ELEMENTS:
+                        old_value = codes_get(subset, key)
+                        LOGGER.warning(f'Overriding key={key}, old value:{old_value}, new value: {value}') # noqa
+                    LOGGER.debug(f'Applying station override {key}={value} for wsi={wsi}')  # noqa
+                    codes_set(subset_out, key, value)
+                except Exception as err:
+                    msg = f'Error applying station override {key}:{value} for wsi={wsi}: {err}'  # noqa
+                    errors.append(msg)
+            for key, value in self.overrides['all'].items():
+                try:
+                    LOGGER.debug(f'Applying any override {key}={value} for wsi={wsi}')  # noqa
+                    codes_set(subset_out, key, value)
+                except Exception as err:
+                    msg = f'Error applying global override {key}:{value} for wsi={wsi}: {err}'  # noqa
+                    errors.append(msg)
+
             isodate_str = isodate.strftime('%Y%m%dT%H%M%S')
 
             rmk = f"WIGOS_{wsi}_{isodate_str}"
             LOGGER.info(f'Publishing with identifier: {rmk}')
+
+            # set location AFTER overrides have been applied
+            try:
+                if any(x in descriptors for x in (6001, 6002)):
+                    longitude = codes_get(subset_out, "#1#longitude")
+                else:
+                    longitude = CODES_MISSING_DOUBLE
+                if any(x in descriptors for x in (5001, 5002)):
+                    latitude = codes_get(subset_out, "#1#latitude")
+                else:
+                    latitude = CODES_MISSING_DOUBLE
+                if 7030 in descriptors:
+                    elevation = codes_get(subset_out,"#1#heightOfStationGroundAboveMeanSeaLevel")  # noqa
+                else:
+                    elevation = CODES_MISSING_DOUBLE
+
+                if CODES_MISSING_DOUBLE in (longitude, latitude):
+                    location = None
+                else:
+                    location = {
+                        "type": "Point",
+                        "coordinates": [round(longitude, 5),
+                                        round(latitude, 5)]
+                    }
+                    if elevation != CODES_MISSING_DOUBLE:
+                        location['coordinates'].append(round(elevation))
+                if location is None or None in location['coordinates']:
+                    msg = f'Missing coordinates in BUFR for wsi={wsi} (tsi={temp_tsi}, using coordinates from station metadata'  # noqa
+                    warnings.append(msg)
+                    location = self.stations.get_geometry(wsi)
+                    long, lat, elev = location.get('coordinates')
+                    codes_set(subset_out, '#1#longitude', long)
+                    codes_set(subset_out, '#1#latitude', lat)
+                    codes_set(subset_out, '#1#heightOfStationGroundAboveMeanSeaLevel', elev)  # noqa
+            except Exception as err:
+                msg = f'Can not parse location from subset with wsi={wsi} (tsi={temp_tsi}): {err}' # noqa
+                LOGGER.info(msg)
 
             LOGGER.debug('Writing bufr4')
             try:
