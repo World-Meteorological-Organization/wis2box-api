@@ -60,6 +60,15 @@ HEADERS = ["edition", "masterTableNumber", "bufrHeaderCentre",
            "typicalMinute", "typicalSecond",
            "numberOfSubsets", "observedData", "compressedData"]
 
+STATION_METADATA_ELEMENTS = (
+    '#1#heightOfBarometerAboveMeanSeaLevel',
+    '#1#heightOfStationGroundAboveMeanSeaLevel',
+    '#1#latitude',
+    '#1#longitude',
+    '#1#regionNumber',
+    '#1#stationOrSiteName'
+)
+
 
 def get_bufr_overrides(metadata_id: str):
     """
@@ -366,8 +375,9 @@ class ObservationDataBUFR():
             # add bufr_overrides
             for key, value in self.overrides['stations'].get(wsi, {}).items():
                 try:
-                    if key == '#1#heightOfStationGroundAboveMeanSeaLevel':
-                        LOGGER.warning(f'Overriding key={key}')
+                    if key in STATION_METADATA_ELEMENTS:
+                        old_value = codes_get(subset, key)
+                        LOGGER.warning(f'Overriding key={key}, old value:{old_value}, new value: {value}') # noqa
                     LOGGER.debug(f'Applying station override {key}={value} for wsi={wsi}')  # noqa
                     codes_set(subset_out, key, value)
                 except Exception as err:
