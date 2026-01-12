@@ -24,7 +24,7 @@
 import logging
 import os
 
-from datetime import datetime
+from datetime import datetime, timezone
 
 import requests
 
@@ -61,8 +61,8 @@ def clean_jobs():
         if job.get('status', 'unknown') != 'successful':
             continue
         endtime_str = job['finished']
-        endtime = datetime.strptime(endtime_str, '%Y-%m-%dT%H:%M:%S.%fZ')
-        minutes_since_end = (datetime.utcnow() - endtime).total_seconds() / 60
+        endtime = datetime.strptime(endtime_str, '%Y-%m-%dT%H:%M:%S.%fZ').replace(tzinfo=timezone.utc)
+        minutes_since_end = (datetime.now(timezone.utc) - endtime).total_seconds() / 60
         logging.debug(f'Job {job["jobID"]} ended {minutes_since_end} min. ago')
         if minutes_since_end > JOB_RETENTION_MINUTES:
             job_ids.append(job['jobID'])
