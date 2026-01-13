@@ -97,7 +97,7 @@ class Stations():
         else:
             return None
 
-    def get_csv_string(self) -> str:
+    def get_csv_string(self, require_tsi=False) -> str:
         """Load stations into csv-string
 
         :returns: csv_string: csv string with station data
@@ -113,6 +113,8 @@ class Stations():
                 tsi = station['properties']['traditional_station_identifier']
             elif '-' in wsi and len(wsi.split('-')) == 4:
                 tsi = wsi.split('-')[3]
+            if (tsi is None or tsi == '') and require_tsi:
+                continue
             barometer_height = None
             if 'barometer_height' in station['properties']:
                 barometer_height = station['properties']['barometer_height']

@@ -164,7 +164,7 @@ class SynopPublishProcessor(BaseProcessor):
         # get the station metadata for the channel
         stations = Stations(channel=channel)
         # get the station metadata as a CSV string
-        metadata = stations.get_csv_string()
+        metadata = stations.get_csv_string(require_tsi=True)
         if metadata is None:
             return handle_error('No stations found')
 
