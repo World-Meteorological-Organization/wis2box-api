@@ -213,7 +213,7 @@ class CSVPublishProcessor(BaseProcessor):
                     geo_station = stations.get_geometry(wsi)
                     # ignore stations without coordinates
                     if not geo_station.get('coordinates'):
-                      continue
+                        continue
                     geo_data = item['_meta'].get('geometry')
                     if all([
                         None not in [geo_data, geo_station],
