@@ -58,7 +58,7 @@ echo "Trying to generate OpenAPI document"
 echo "openapi.yml generated continue to pygeoapi"
 
 echo "Starting cron"
-/usr/local/bin/supercronic /app/docker/wis2box-api.cron &
+/usr/local/bin/supercronic -quiet /app/docker/wis2box-api.cron &
 
 case ${entry_cmd} in
     # Run pygeoapi server
