@@ -212,10 +212,10 @@ class CSVPublishProcessor(BaseProcessor):
                     # compare geometry in _meta with station geometry
                     geo_station = stations.get_geometry(wsi)
                     geo_data = item['_meta'].get('geometry')
-                    if all([
-                        None not in [geo_data, geo_station],
+                    if (
+                        None not in [geo_data, geo_station] and
                         None not in [geo_data.get('coordinates'), geo_station.get('coordinates')] # noqa
-                    ]):
+                    ):
                         s_lon, s_lat = geo_station['coordinates'][0:2]
                         d_lon, d_lat = geo_data['coordinates'][0:2]
                         station_coord = (s_lat, s_lon)
