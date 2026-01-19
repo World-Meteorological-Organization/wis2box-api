@@ -211,6 +211,9 @@ class CSVPublishProcessor(BaseProcessor):
                 elif wsi:
                     # compare geometry in _meta with station geometry
                     geo_station = stations.get_geometry(wsi)
+                    # ignore stations without coordinates
+                    if not geo_station.get('coordinates'):
+                      continue
                     geo_data = item['_meta'].get('geometry')
                     if all([
                         None not in [geo_data, geo_station],
