@@ -187,8 +187,8 @@ class StationMsgInfoProcessor(BaseProcessor):
         query_core = {
             'bool': {
                 'filter': [
-                    {'range': {'properties.datetime.raw': {'gte': date_offset}}}, # noqa
-                    {'term': {'properties.metadata_id.raw': collection_id}}
+                    {'range': {'properties.datetime': {'gte': date_offset}}},
+                    {'term': {'properties.metadata_id.keyword': collection_id}}
                 ]
             }
         }
@@ -200,7 +200,7 @@ class StationMsgInfoProcessor(BaseProcessor):
                 },
                 'aggs': {
                     'count': {
-                        'terms': {'field': 'properties.id.raw', 'size': 64000} # noqa
+                        'terms': {'field': 'properties.id.keyword', 'size': 64000} # noqa
                     }
                 }
             }
