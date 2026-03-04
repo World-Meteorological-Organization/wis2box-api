@@ -45,6 +45,9 @@ RUN pip3 install --no-cache-dir \
     https://github.com/World-Meteorological-Organization/pywcmp/archive/refs/tags/0.13.1.zip \
     https://github.com/wmo-cop/pyoscar/archive/refs/tags/0.9.0.zip
 
+# force reinstall numpy to older version to avoid compatibility issues
+RUN pip3 install --force-reinstall numpy==2.3.5
+
 RUN pywcmp bundle sync
 
 # get latest version of csv2bufr templates and install
