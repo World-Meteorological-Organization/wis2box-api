@@ -43,6 +43,7 @@ PROCESS_METADATA = {
     'description': 'Remove metadata and data-mappings in backend and send notification to unpublish metadata', # noqa
     'keywords': [],
     'links': [],
+    'jobControlOptions': ['sync-execute', 'async-execute'],
     'inputs': {
         'metadata_id': {
             'title': {'en': 'metadata record identifier'},

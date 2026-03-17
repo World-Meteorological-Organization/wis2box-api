@@ -34,6 +34,7 @@ PROCESS_METADATA = {
     'description': 'Query OSCAR and return station metadata for wis2box',
     'keywords': [],
     'links': [],
+    'jobControlOptions': ['sync-execute', 'async-execute'],
     'inputs': {
         'wigos_station_identifier': {
             'title': {'en': 'WIGOS Station Identifier'},

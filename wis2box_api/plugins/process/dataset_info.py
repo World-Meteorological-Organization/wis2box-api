@@ -56,6 +56,7 @@ PROCESS_DEF = {
     'description': 'Retrieve information about datasets contained in the WIS2BOX', # noqa
     'keywords': [],
     'links': [],
+    'jobControlOptions': ['sync-execute', 'async-execute'],
     'inputs': {
         'collection': {
             'title': {'en': 'Collection identifier'},

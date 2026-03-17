@@ -42,6 +42,7 @@ PROCESS_METADATA = {
     'description': 'Update metadata and data-mappings in backend and publish metadata-notification', # noqa
     'keywords': [],
     'links': [],
+    'jobControlOptions': ['sync-execute', 'async-execute'],
     'inputs': {
         'metadata': {
             'title': {'en': 'metadata'},

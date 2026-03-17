@@ -40,6 +40,7 @@ PROCESS_METADATA = {
     'description': 'POST a storage-event', # noqa
     'keywords': [],
     'links': [],
+    'jobControlOptions': ['sync-execute', 'async-execute'],
     'inputs': {
         'storage_event': {
             'title': {'en': 'Storage Event'},
