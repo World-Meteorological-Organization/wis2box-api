@@ -36,8 +36,8 @@ RUN apt-get update && \
 
 RUN /venv/bin/python3 -m pip install --no-cache-dir gunicorn gevent
 
-# install pygeoapi==0.22.0 from GitHub
-RUN pip3 install --no-cache-dir https://github.com/geopython/pygeoapi/archive/refs/tags/0.22.0.zip
+# install pygeoapi==0.23.2 from GitHub
+RUN pip3 install --no-cache-dir https://github.com/geopython/pygeoapi/archive/refs/tags/0.23.2.zip
 
 # install WMO software
 RUN pip3 install --no-cache-dir \
