@@ -40,6 +40,7 @@ PROCESS_DEF = {
     ' counted observations by station',
     'keywords': [],
     'links': [],
+    'jobControlOptions': ['sync-execute', 'async-execute'],
     'inputs': {
         'collection': {
             'title': {'en': 'Collection identifier'},

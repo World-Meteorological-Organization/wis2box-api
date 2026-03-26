@@ -38,6 +38,7 @@ PROCESS_DEF = {
     },
     'keywords': [],
     'links': [],
+    'jobControlOptions': ['sync-execute', 'async-execute'],
     'inputs': {
         'plugin': {
             'title': 'Plugin',

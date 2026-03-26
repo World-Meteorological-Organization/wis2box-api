@@ -54,6 +54,7 @@ PROCESS_METADATA = {
     'description': 'Download bufr from URL and create Temperature Log-P chart',  # noqa
     'keywords': [],
     'links': [],
+    'jobControlOptions': ['sync-execute', 'async-execute'],
     'inputs': {
         'data_url': {
             'title': 'data_url',
