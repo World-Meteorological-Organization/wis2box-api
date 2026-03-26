@@ -36,17 +36,17 @@ RUN apt-get update && \
 
 RUN /venv/bin/python3 -m pip install --no-cache-dir gunicorn gevent
 
-# install pygeoapi==0.22.0 from GitHub
-RUN pip3 install --no-cache-dir https://github.com/geopython/pygeoapi/archive/refs/tags/0.22.0.zip
+# force reinstall numpy to older version to avoid compatibility issues
+RUN pip3 install --force-reinstall numpy==2.3.5
+
+# install pygeoapi==0.23.2 from GitHub
+RUN pip3 install --no-cache-dir https://github.com/geopython/pygeoapi/archive/refs/tags/0.23.2.zip
 
 # install WMO software
 RUN pip3 install --no-cache-dir \
     https://github.com/World-Meteorological-Organization/pywis-topics/archive/refs/tags/0.3.5.zip \
     https://github.com/World-Meteorological-Organization/pywcmp/archive/refs/tags/0.13.1.zip \
     https://github.com/wmo-cop/pyoscar/archive/refs/tags/0.9.0.zip
-
-# force reinstall numpy to older version to avoid compatibility issues
-RUN pip3 install --force-reinstall numpy==2.3.5
 
 RUN pywcmp bundle sync
 
