@@ -109,8 +109,10 @@ class MappingsInfoProcessor(BaseProcessor):
                 if '/opt/csv2bufr/templates/' in id_:
                     id_ = id_.replace('/opt/csv2bufr/templates/', '').replace('.json', '') # noqa
                 # to ensure backward compatibility with existing titles
-                if title.find('aws-template') != -1:
-                    title = 'AWS'
+                if title.find('aws-template-climsoft') != -1:
+                    title = 'AWS (ClimSoft)'
+                elif title.find('aws-template') != -1:
+                    title = 'AWS (generic)'
                 elif title.find('daycli-template') != -1:
                     title = 'DayCLI'
                 elif title.find('CampbellAfrica-v1-template') != -1:

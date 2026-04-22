@@ -566,8 +566,12 @@ def test_mappings_info():
                 "title": "WIS2-pilot-template-2021"
             },
             {
+                "id": "aws-template-climsoft",
+                "title": "AWS (ClimSoft)"
+            },
+            {
                 "id": "aws-template",
-                "title": "AWS"
+                "title": "AWS (generic)"
             },
             {
                 "id": "climat-template",
