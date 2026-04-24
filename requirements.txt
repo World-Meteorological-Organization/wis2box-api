@@ -12,7 +12,7 @@ paho-mqtt
 pygeometa
 pymetdecoder-wmo==0.1.14
 synop2bufr==0.7.0
-csv2bufr==0.8.7
+csv2bufr @ git+https://github.com/World-Meteorological-Organization/csv2bufr.git@async-logging-fix
 minio==7.2.7
 bufr2geojson==0.7.1
 geopy==2.4.1
