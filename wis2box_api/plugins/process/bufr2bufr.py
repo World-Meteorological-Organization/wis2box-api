@@ -38,7 +38,7 @@ PROCESS_METADATA = {
     'description': 'Converts the posted data to BUFR and publishes to specified topic',  # noqa
     'keywords': [],
     'links': [],
-    'jobControlOptions': ['async-execute'],
+    'jobControlOptions': ['sync-execute', 'async-execute'],
     'inputs': {
         'data': {
             'title': 'data',
