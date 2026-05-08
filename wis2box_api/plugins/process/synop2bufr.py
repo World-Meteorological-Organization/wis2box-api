@@ -132,15 +132,24 @@ class SynopPublishProcessor(BaseProcessor):
         """
 
         LOGGER.info('Executing process {}'.format(self.name))
-
+        gts_headers = None
         try:
             notify = data['notify']
             metadata_id = data.get('metadata_id', None)
             channel = data.get('channel', None)
+            gts_ttaaii = data.get('gts_ttaaii', None)
+            gts_cccc = data.get('gts_cccc', None)
             if metadata_id is None and notify:
                 raise Exception('metadata_id must be provided if notify is True') # noqa
         except Exception as err:
             return handle_error({err})
+
+        gts_headers = None
+        if gts_ttaaii is not None and gts_cccc is not None:
+            gts_headers = {
+                'ttaaii': gts_ttaaii,
+                'cccc': gts_cccc
+            }
 
         # get the channel from the metadata
         if channel is None:
@@ -211,7 +220,7 @@ class SynopPublishProcessor(BaseProcessor):
 
         LOGGER.debug(f'synop2bufr-transform returned {len(output_items)} items') # noqa
 
-        return data_handler.process_items(output_items)
+        return data_handler.process_items(output_items, gts_headers=gts_headers) # noqa
 
     def __repr__(self):
         return '<submit> {}'.format(self.name)
