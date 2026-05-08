@@ -38,7 +38,7 @@ PROCESS_METADATA = {
     'description': 'Download bufr from URL and convert file-content to geoJSON',  # noqa
     'keywords': [],
     'links': [],
-    'jobControlOptions': ['async-execute'],
+    'jobControlOptions': ['sync-execute', 'async-execute'],
     'inputs': {
         'data_url': {
             'title': 'data_url',

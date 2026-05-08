@@ -41,7 +41,7 @@ PROCESS_METADATA = {
     'description': 'Process input data attributes to publish data',  # noqa
     'keywords': [],
     'links': [],
-    'jobControlOptions': ['async-execute'],
+    'jobControlOptions': ['sync-execute', 'async-execute'],
     'inputs': {
         'metadata_id': {
             'title': {'en': 'Metadata ID'},
