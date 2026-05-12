@@ -135,12 +135,12 @@ class SynopPublishProcessor(BaseProcessor):
         gts_headers = None
         try:
             notify = data['notify']
-            metadata_id = data.get('metadata_id', None)
-            channel = data.get('channel', None)
-            gts_ttaaii = data.get('gts_ttaaii', None)
-            gts_cccc = data.get('gts_cccc', None)
+            metadata_id = data.get('metadata_id')
+            channel = data.get('channel')
+            gts_ttaaii = data.get('gts_ttaaii')
+            gts_cccc = data.get('gts_cccc')
             if metadata_id is None and notify:
-                raise Exception('metadata_id must be provided if notify is True') # noqa
+                raise Exception('metadata_id must be provided if notify is True')  # noqa
         except Exception as err:
             return handle_error({err})
 
@@ -188,7 +188,7 @@ class SynopPublishProcessor(BaseProcessor):
                                        year=year,
                                        month=month)
         except Exception as err:
-            return handle_error(f'synop2bufr raised Exception: {err}') # noqa
+            return handle_error(f'synop2bufr raised Exception: {err}')  # noqa
 
         output_items = []
         try:
@@ -203,8 +203,8 @@ class SynopPublishProcessor(BaseProcessor):
                             errors.append(error)
                     if 'warnings' in item['_meta']['result']:
                         for warning in item['_meta']['result']['warnings']:
-                            warning.replace('station list file','station list') # noqa
-                            warning.replace('not found in station file','not in station list; skipping') # noqa
+                            warning.replace('station list file','station list')  # noqa
+                            warning.replace('not found in station file','not in station list; skipping')  # noqa
                             warnings.append(warning)
                 item['warnings'] = warnings
                 item['errors'] = errors
@@ -218,9 +218,9 @@ class SynopPublishProcessor(BaseProcessor):
             }
             output_items.append(item)
 
-        LOGGER.debug(f'synop2bufr-transform returned {len(output_items)} items') # noqa
+        LOGGER.debug(f'synop2bufr-transform returned {len(output_items)} items')  # noqa
 
-        return data_handler.process_items(output_items, gts_headers=gts_headers) # noqa
+        return data_handler.process_items(output_items, gts_headers=gts_headers)  # noqa
 
     def __repr__(self):
         return '<submit> {}'.format(self.name)
