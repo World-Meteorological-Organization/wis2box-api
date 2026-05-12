@@ -79,10 +79,11 @@ class DataHandler():
         self._channel = channel.replace('origin/a/wis2/', '')
         self.metadata_id = metadata_id
 
-    def process_items(self, output_items: []):
+    def process_items(self, output_items: [], gts_headers: dict = None):
         """Process output_items, store and publish them
 
         :param output_items: list of output-items from the transform
+        :param gts_headers: optional dict of GTS headers for notification
 
         :returns: 'application/json'
         """
@@ -163,7 +164,7 @@ class DataHandler():
                     })
                 if self._notify:
                     # send the last entry in the data list as a notification
-                    result = self.send_data_publish_request(data[-1])
+                    result = self.send_data_publish_request(data[-1], gts_headers=gts_headers) # noqa
                     if result != 'success':
                         errors.append(f'{result}')
                     else:
@@ -188,7 +189,7 @@ class DataHandler():
 
         return mimetype, outputs
 
-    def send_data_publish_request(self, data_item: dict):
+    def send_data_publish_request(self, data_item: dict, gts_headers: dict = None): # noqa
         """Send DataPublishRequest
 
         :param data: data_item
@@ -205,6 +206,8 @@ class DataHandler():
                 'filename': data_item['filename'],
                 '_meta': data_item['_meta']
             }
+            if gts_headers is not None:
+                msg['gts'] = gts_headers
             # publish notification on internal broker
             private_auth = {
                 'username': BROKER_USERNAME,
