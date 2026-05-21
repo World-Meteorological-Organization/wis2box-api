@@ -567,7 +567,7 @@ def test_mappings_info():
             },
             {
                 "id": "CampbellAfrica-v1-template",
-                "title": "CampbellAfrica-v1 (WIS2-pilot-2021)"
+                "title": "CampbellAfrica-v1 (pilot-2021)"
             },
             {
                 "id": "Surface-RA-IV-100",
