@@ -554,32 +554,32 @@ def test_mappings_info():
     expected_response = {
         "templates": [
             {
-            "id": "/data/wis2box/mappings/my_csv2bufr_mappings.json",
-            "title": "my_csv2bufr_mappings"
+                "id": "/data/wis2box/mappings/my_csv2bufr_mappings.json",
+                "title": "my_csv2bufr_mappings"
             },
             {
-            "id": "climat-template",
-            "title": "CLIMAT"
+                "id": "climat-template",
+                "title": "CLIMAT"
             },
             {
-            "id": "daycli-template",
-            "title": "DayCLI"
+                "id": "daycli-template",
+                "title": "DayCLI"
             },
             {
-            "id": "CampbellAfrica-v1-template",
-            "title": "CampbellAfrica-v1 (WIS2-pilot-2021)"
+                "id": "CampbellAfrica-v1-template",
+                "title": "CampbellAfrica-v1 (WIS2-pilot-2021)"
             },
             {
-            "id": "Surface-RA-IV-100",
-            "title": "Surface-RA-IV-100"
+                "id": "Surface-RA-IV-100",
+                "title": "Surface-RA-IV-100"
             },
             {
-            "id": "Climsoft-hourly",
-            "title": "CLimsoft hourly"
+                "id": "Climsoft-hourly",
+                "title": "CLimsoft hourly"
             },
             {
-            "id": "aws-template",
-            "title": "AWS (GBON minimal)"
+                "id": "aws-template",
+                "title": "AWS (GBON minimal)"
             }
         ]
     }
