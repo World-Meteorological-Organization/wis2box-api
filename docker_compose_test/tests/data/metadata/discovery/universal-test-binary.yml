@@ -7,17 +7,17 @@ wis2box:
         plugins:
 
 mcf:
-    version: 1.0
+    version: 2.0
 
 metadata:
     identifier: urn:wmo:md:universal-test:test-binary
     hierarchylevel: dataset
+    dates:
+        creation: 2023-01-18
 
 identification:
     title: universal.test
     abstract: universal.test
-    dates:
-        creation: 2023-01-18
     keywords:
         default:
             keywords:

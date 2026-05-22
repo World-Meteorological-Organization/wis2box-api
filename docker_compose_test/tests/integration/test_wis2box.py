@@ -558,24 +558,28 @@ def test_mappings_info():
                 "title": "my_csv2bufr_mappings"
             },
             {
+                "id": "climat-template",
+                "title": "CLIMAT"
+            },
+            {
                 "id": "daycli-template",
                 "title": "DayCLI"
             },
             {
                 "id": "CampbellAfrica-v1-template",
-                "title": "WIS2-pilot-template-2021"
+                "title": "CampbellAfrica-v1 (pilot-2021)"
             },
             {
-                "id": "aws-template-climsoft",
-                "title": "AWS (ClimSoft)"
+                "id": "Surface-RA-IV-100",
+                "title": "Surface-RA-IV-100"
+            },
+            {
+                "id": "Climsoft-hourly",
+                "title": "Climsoft hourly"
             },
             {
                 "id": "aws-template",
-                "title": "AWS (generic)"
-            },
-            {
-                "id": "climat-template",
-                "title": "climat-template"
+                "title": "AWS (GBON minimal)"
             }
         ]
     }

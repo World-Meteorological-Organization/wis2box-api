@@ -12,17 +12,17 @@ wis2box:
             "bufrHeaderCentre": 98
 
 mcf:
-    version: 1.0
+    version: 2.0
 
 metadata:
     identifier: urn:wmo:md:bufr-test:test
     hierarchylevel: dataset
+    dates:
+        creation: 2023-01-18
 
 identification:
     title: bufr.test
     abstract: bufr.test
-    dates:
-        creation: 2023-01-18
     keywords:
         default:
             keywords:
