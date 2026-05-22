@@ -575,7 +575,7 @@ def test_mappings_info():
             },
             {
                 "id": "Climsoft-hourly",
-                "title": "CLimsoft hourly"
+                "title": "Climsoft hourly"
             },
             {
                 "id": "aws-template",

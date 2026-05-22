@@ -116,7 +116,7 @@ class MappingsInfoProcessor(BaseProcessor):
                 elif title.find('climat-template') != -1:
                     title = 'CLIMAT'
                 elif title.find('Climsoft-hourly') != -1:
-                    title = 'CLimsoft hourly'
+                    title = 'Climsoft hourly'
                 elif title.find('CampbellAfrica-v1-template') != -1:
                     title = 'CampbellAfrica-v1 (pilot-2021)'
                 else:
