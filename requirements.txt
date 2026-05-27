@@ -11,7 +11,7 @@ json-merge-patch
 paho-mqtt
 pygeometa
 pymetdecoder-wmo==0.1.14
-synop2bufr==0.8.0
+synop2bufr==0.8.1
 csv2bufr==0.8.8
 minio==7.2.7
 bufr2geojson==0.7.1
