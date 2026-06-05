@@ -120,7 +120,6 @@ PROCESS_METADATA = {
                 },
                 "properties": {
                     "type": "dataset",
-                    "identifier": "urn:wmo:md:test-wis-node2:surface-based-observations.synop", # noqa
                     "title": "Hourly synoptic observations from fixed-land stations (SYNOP) (test-wis-node2)", # noqa
                     "description": "this is a test dataset",
                     "language": {
