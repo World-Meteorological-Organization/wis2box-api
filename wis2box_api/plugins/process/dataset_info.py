@@ -144,7 +144,7 @@ class DatasetInfoProcessor(BaseProcessor):
             response = requests.get(url)
             if response.status_code == 200:
                 for item in response.json()['features']:
-                    key = item['properties']['identifier']
+                    key = item['id']
                     if collection_id is None or collection_id == key:
                         # find index in api_config
                         index = 'notfound'
