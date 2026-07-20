@@ -64,10 +64,11 @@ COPY ./docker/pygeoapi-config.yml $PYGEOAPI_CONFIG
 
 RUN cd /app \
     && pip3 install -e . \
+    && pip3 install --upgrade cryptography urllib3 \
     && chmod +x /app/docker/es-entrypoint.sh /app/docker/wait-for-elasticsearch.sh
 
 # Install Supercronic for job management
-RUN curl -fsSLO "https://github.com/aptible/supercronic/releases/download/v0.2.46/supercronic-linux-amd64" && \
+RUN curl -fsSLO "https://github.com/aptible/supercronic/releases/download/v0.2.47/supercronic-linux-amd64" && \
     chmod +x supercronic-linux-amd64 && \
     mv supercronic-linux-amd64 /usr/local/bin/supercronic
 
