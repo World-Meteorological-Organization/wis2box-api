@@ -40,7 +40,7 @@ RUN /venv/bin/python3 -m pip install --no-cache-dir gunicorn gevent
 RUN pip3 install --force-reinstall numpy==2.3.5
 
 # install pygeoapi==0.23.3 from GitHub
-RUN pip3 install --no-cache-dir https://github.com/geopython/pygeoapi/archive/refs/tags/0.23.3.zip
+RUN pip3 install --no-cache-dir https://github.com/geopython/pygeoapi/archive/refs/tags/0.24.0.zip
 
 # install WMO software
 RUN pip3 install --no-cache-dir \
