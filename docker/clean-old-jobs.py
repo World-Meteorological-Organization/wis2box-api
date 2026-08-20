@@ -43,8 +43,12 @@ def clean_jobs():
         'Accept': 'application/json'
     }
 
+    query_params = {
+        'offset': 0
+    }
+
     try:
-        response = requests.get(url, headers=headers)
+        response = requests.get(url, headers=headers, params=query_params)
         result = response.json()
         if len(result['jobs']) == 0:
             LOGGER.info('No jobs to clean')
