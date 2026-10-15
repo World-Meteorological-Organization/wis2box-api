@@ -210,7 +210,7 @@ class Bufr2UpperAirChartProcessor(BaseProcessor):
         ax.semilogy(Td, p, color='green', linewidth=1.5, label='Dewpoint')
 
         # --- Formatting axes ---
-        ax.set_ylim(1050, 100)
+        ax.set_ylim(1050, 30)
         ax.set_xlim(-50, 50)
 
         from matplotlib.ticker import (MultipleLocator, NullFormatter, ScalarFormatter) # noqa
