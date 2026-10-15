@@ -195,7 +195,7 @@ class ObservationDataBUFR():
         headers['masterTablesVersionNumber'] = table_version
         # set the unexpanded descriptors
         out_ue = codes_get_array(bufr_in, 'unexpandedDescriptors').tolist()
-        if 301150 not in out_ue:
+        if 1125 not in descriptors:
             out_ue.insert(0, 301150)
         headers['unexpandedDescriptors'] = out_ue
 
