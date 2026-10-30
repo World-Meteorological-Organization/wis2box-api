@@ -17,9 +17,6 @@ jobs:
       - name: Run Trivy vulnerability scanner on wis2box-api
         if: always()
         uses: aquasecurity/trivy-action@v0.36.0
-        env:
-          TRIVY_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-db:2
-          TRIVY_JAVA_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-java-db:1
         with:
           image-ref: 'wis2box-api:test'
           format: 'table'
@@ -27,4 +24,4 @@ jobs:
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
-          skip-files: 'usr/local/bin/supercronic'
+          skip-files: '**/pip/_vendor/bom.cdx.json'
