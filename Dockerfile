@@ -28,8 +28,10 @@ ENV CSV2BUFR_TEMPLATES=/data/wis2box/mappings
 WORKDIR /root
 
 RUN apt-get update -y && apt-get install cron curl python3-pip git unzip -y
-# install gdal
-RUN apt-get update && \
+# fix CVE-2026-109518 then install gdal and other dependencies
+RUN apt-get update -y && \
+    # upgrade apt packages to fix CVE-2026-109518
+    apt-get install -y --only-upgrade apt libapt-pkg6.0t64 && \
     apt-get install -y --no-install-recommends \
     python3-gdal libudunits2-dev dos2unix wget && \
     rm -rf /var/lib/apt/lists/*
