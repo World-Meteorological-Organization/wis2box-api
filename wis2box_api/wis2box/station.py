@@ -163,7 +163,7 @@ class Stations():
 
         def station_in_channel(station, channel):
             datasets = station['properties'].get('datasets')
-            if datasets is not None and isinstance(datasets, list) and datasets:
+            if datasets is not None and isinstance(datasets, list) and datasets: # noqa
                 return dataset_id in datasets
             topics = station['properties']['topics'] if 'topics' in station['properties'] else [] # noqa
             return channel in [x.replace('origin/a/wis2/', '') for x in topics]

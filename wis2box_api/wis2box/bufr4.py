@@ -115,7 +115,7 @@ class ObservationDataBUFR():
         """
 
         self.input_bytes = input_bytes
-        self.stations = Stations(channel, dataset_id=dataset_id)
+        self.stations = Stations(dataset_id=dataset_id, channel=channel)
         self.output_items = []
         self.overrides = {
             'stations': overrides.get('stations', {}) if overrides else {},
