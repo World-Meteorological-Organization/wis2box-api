@@ -257,8 +257,8 @@ class StationMsgInfoProcessor(BaseProcessor):
         ff = []
         try:
             for f in fc['features']:
-                datasets = f['properties'].get('datasets')
-                if isinstance(datasets, list) and datasets:
+                datasets = f['properties'].get('datasets', [])
+                if len(datasets) > 0:
                     matches = collection_id in datasets
                 else:
                     topics = f['properties'].get('topics', [])
