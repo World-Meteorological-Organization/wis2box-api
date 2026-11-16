@@ -103,6 +103,7 @@ class ObservationDataBUFR():
     """Observation data in bufr format"""
 
     def __init__(self, input_bytes: bytes,
+                 dataset_id: str = None,
                  channel: str = None,
                  overrides: dict = None):
         """
@@ -114,7 +115,7 @@ class ObservationDataBUFR():
         """
 
         self.input_bytes = input_bytes
-        self.stations = Stations(channel)
+        self.stations = Stations(channel, dataset_id=dataset_id)
         self.output_items = []
         self.overrides = {
             'stations': overrides.get('stations', {}) if overrides else {},

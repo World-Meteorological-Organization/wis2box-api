@@ -32,9 +32,9 @@ LOGGER = logging.getLogger(__name__)
 
 class Stations():
 
-    def __init__(self, channel: str):
+    def __init__(self, dataset_id: str = None, channel: str = None):
         self.stations = {}
-        self._load_stations(channel=channel)
+        self._load_stations(dataset_id=dataset_id, channel=channel)
 
     def get_geometry(self, wsi: str) -> dict:
         """
@@ -147,8 +147,11 @@ class Stations():
         else:
             return None
 
-    def _load_stations(self, channel: str = None):
+    def _load_stations(self, dataset_id: str = None, channel: str = None):
         """Load stations from API
+
+        :param dataset_id: dataset identifier to match station associations
+        :param channel: channel for stations without dataset associations
 
         :returns: None
         """
@@ -159,6 +162,9 @@ class Stations():
         channel = channel.replace('origin/a/wis2/', '')
 
         def station_in_channel(station, channel):
+            datasets = station['properties'].get('datasets')
+            if datasets is not None and isinstance(datasets, list) and datasets:
+                return dataset_id in datasets
             topics = station['properties']['topics'] if 'topics' in station['properties'] else [] # noqa
             return channel in [x.replace('origin/a/wis2/', '') for x in topics]
 
