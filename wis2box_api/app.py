@@ -33,12 +33,6 @@ app.register_blueprint(pygeoapi_blueprint, url_prefix='/oapi')
 
 app.register_blueprint(SNS_BLUEPRINT)
 
-try:
-    from flask_cors import CORS
-    CORS(app)
-except ImportError:  # CORS needs to be handled by upstream server
-    pass
-
 
 @app.route('/')
 def home():
