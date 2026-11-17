@@ -171,7 +171,7 @@ class SynopPublishProcessor(BaseProcessor):
                                    notify,
                                    metadata_id=metadata_id)
         # get the station metadata for the channel
-        stations = Stations(channel=channel)
+        stations = Stations(dataset_id=metadata_id, channel=channel)
         # get the station metadata as a CSV string
         metadata = stations.get_csv_string(require_tsi=True)
         if metadata is None:

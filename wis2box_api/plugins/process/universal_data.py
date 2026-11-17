@@ -179,7 +179,8 @@ class UniversalDataPublishProcessor(BaseProcessor):
                 wsi = data.get('wigos_station_identifier')
                 if wsi is not None:
                     # get the station metadata
-                    stations = Stations(channel=channel)
+                    stations = Stations(dataset_id=metadata_id,
+                                        channel=channel)
                     station = stations.get_station(wsi)
                     if station is None:
                         msg = f'No station found for WIGOS station identifier: {wsi}' # noqa

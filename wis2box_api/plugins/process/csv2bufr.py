@@ -162,7 +162,7 @@ class CSVPublishProcessor(BaseProcessor):
                                    notify,
                                    metadata_id=metadata_id)
         # get the station metadata for the channel
-        stations = Stations(channel=channel)
+        stations = Stations(dataset_id=metadata_id, channel=channel)
 
         # Now call csv to BUFR
         try:

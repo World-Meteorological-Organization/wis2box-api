@@ -135,7 +135,8 @@ class BufrPublishProcessor(BaseProcessor):
             # Decode base64 encoded data
             input_bytes = base64.b64decode(encoded_data_bytes)
             overrides = get_bufr_overrides(metadata_id) if metadata_id else None # noqa
-            obs_bufr = ObservationDataBUFR(input_bytes, channel, overrides)
+            obs_bufr = ObservationDataBUFR(input_bytes, metadata_id,
+                                           channel, overrides)
             LOGGER.info(f'Size of input_bytes: {len(input_bytes)}')
         except Exception as err:
             return handle_error(f'bufr2bufr raised Exception: {err}') # noqa

@@ -253,15 +253,20 @@ class StationMsgInfoProcessor(BaseProcessor):
             "title": collection_id  # noqa
         }
 
-        # filter by topic
+        # filter by dataset, falling back to topics for legacy stations
         ff = []
         try:
             for f in fc['features']:
-                if topic.replace('origin/a/wis2/', '') in f['properties']['topics']:  # noqa
-                    f['properties']['topic'] = collection_id
-                    f['links'] = [dm_link]
-                    ff.append(f)
-                elif topic in f['properties']['topics']:
+                datasets = f['properties'].get('datasets', [])
+                if len(datasets) > 0:
+                    matches = collection_id in datasets
+                else:
+                    topics = f['properties'].get('topics', [])
+                    matches = (
+                        topic.replace('origin/a/wis2/', '') in topics or
+                        topic in topics
+                    )
+                if matches:
                     f['properties']['topic'] = collection_id
                     f['links'] = [dm_link]
                     ff.append(f)
